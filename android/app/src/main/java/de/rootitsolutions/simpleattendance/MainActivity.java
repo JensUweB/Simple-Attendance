@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package de.rootitsolutions.simpleattendance;
 
 import android.os.Bundle;
 
