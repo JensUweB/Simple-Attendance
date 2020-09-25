@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title><h1 id="title">Groups</h1></ion-title>
+    <ion-buttons slot="end" style="margin-right: 20px;">
+      <ion-item (click)="toggleGroupInput()">
+        <ion-icon name="person-add-outline"></ion-icon>
+      </ion-item>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="container">
+    <ion-grid>
+      <ion-row *ngIf="showGroupInput">
+        <ion-col>
+          <ion-item>
+            <ion-label>Group Name:</ion-label>
+            <ion-input [(ngModel)]="groupName"></ion-input>
+            <ion-button (click)="createGroup()">Add</ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div *ngIf="groups && groups.length > 0">
+            <ion-row *ngFor="let group of groups">
+              <ion-col>
+                <ion-item [routerLink]="'/groups/details/' + group.id">
+                  <ion-icon name="people-outline" slot="start"></ion-icon>
+                  <ion-label>
+                    {{group.name}}
+                    <ion-badge>{{group.students.length}}</ion-badge>
+                  </ion-label>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/groups"></ion-back-button>
+    </ion-buttons>
+    <ion-title><h2 id="title">{{group.name}}</h2></ion-title>
+    <ion-buttons slot="end" style="margin-right: 20px;">
+      <ion-item (click)="removeGroup()">
+        <ion-icon name="trash-outline" color="danger"></ion-icon>
+      </ion-item>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="container">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-select multiple="true" okText="Update Group" [(ngModel)]="selectedStudents" selectedText="Select Students"
+          (ionChange)="onSelectionChange()">
+            <ion-label>Select Students</ion-label>
+            <ion-select-option *ngFor="let student of allStudents" [value]="student.id">
+              {{student.name}}
+            </ion-select-option>
+          </ion-select>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div *ngIf="!group.students || group.students.length === 0">
+            <p>This group is pretty empty, huh? <br/> Just click on the dropdown above to add someone to this group!</p>
+          </div>
+          <ion-list *ngIf="group.students && group.students.length > 0">
+            <ion-item *ngFor="let student of group.students">
+              <ion-label>{{student.name}}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

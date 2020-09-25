@@ -2,15 +2,19 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
+
   {
-    path: '',
-    redirectTo: 'folder/Inbox',
-    pathMatch: 'full'
+    path: 'groups',
+    loadChildren: () => import('./core/groups/group.module').then(m => m.GroupModule)
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
-  }
+    path: 'students',
+    loadChildren: () => import('./core/students/students.module').then(m => m.StudentsModule)
+  },
+  {
+    path: 'training',
+    loadChildren: () => import('./core/training/training.module').then(m => m.TrainingModule)
+  },
 ];
 
 @NgModule({
