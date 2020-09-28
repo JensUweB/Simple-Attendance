@@ -33,7 +33,7 @@
           </div>
           <ion-list *ngIf="group.students && group.students.length > 0">
             <ion-item *ngFor="let student of group.students">
-              <ion-label>{{student.name}}</ion-label>
+              <ion-label><ion-icon name="person" style="margin-right: 5px;"></ion-icon>{{student.name}}</ion-label>
             </ion-item>
           </ion-list>
         </ion-col>

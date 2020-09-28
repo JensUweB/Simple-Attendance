@@ -6,12 +6,14 @@ import {NewTrainingComponent} from './pages/new-training/new-training.component'
 import {IonicModule} from '@ionic/angular';
 import {FormsModule} from '@angular/forms';
 import {TrainingArchiveComponent} from './pages/training-archive/training-archive.component';
+import {PrintViewComponent} from './components/print-view/print-view.component';
 
 
 @NgModule({
   declarations: [
       NewTrainingComponent,
       TrainingArchiveComponent,
+      PrintViewComponent
   ],
     imports: [
         CommonModule,
@@ -22,7 +24,8 @@ import {TrainingArchiveComponent} from './pages/training-archive/training-archiv
     ],
   exports: [
       NewTrainingComponent,
-      TrainingArchiveComponent
+      TrainingArchiveComponent,
+      PrintViewComponent
   ],
     providers: []
 })

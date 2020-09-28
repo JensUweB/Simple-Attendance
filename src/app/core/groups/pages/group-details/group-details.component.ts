@@ -3,6 +3,7 @@ import {Group, GroupService} from '../../services/group.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Student, StudentService} from '../../../students/services/student.service';
 import {Subscription} from 'rxjs';
+import {AlertController, ModalController} from '@ionic/angular';
 
 @Component({
   selector: 'app-group-details',
@@ -20,7 +21,9 @@ export class GroupDetailsComponent implements OnInit {
       private router: Router,
       private route: ActivatedRoute,
       private groupService: GroupService,
-      private studentService: StudentService) {
+      private studentService: StudentService,
+      private alertCtrl: AlertController
+  ) {
     const id = this.route.snapshot.paramMap.get('id');
     this.group = this.groupService.getGroupById(id);
     this.studentsSub = this.studentService.studentsSubject.subscribe((data) => this.allStudents = data);
@@ -41,8 +44,25 @@ export class GroupDetailsComponent implements OnInit {
     this.groupService.updateGroup(this.group);
   }
 
-  removeGroup() {
-    this.groupService.removeGroup(this.group);
-    this.router.navigateByUrl('/groups');
+  async removeGroup() {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirm delete',
+      message: 'Do you really want to delete this group? The archive is not affected by this.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {}
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+            this.groupService.removeGroup(this.group);
+            this.router.navigateByUrl('/groups');
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 }

@@ -1,0 +1,51 @@
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <h2>Print View</h2>
+    </ion-col>
+    <ion-col>
+      <ion-item class="ion-float-right">
+        <ion-icon name="download-outline" (click)="csvExport()"></ion-icon>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row id="printArea" #printArea>
+    <ion-col>
+      <ion-card *ngFor="let training of trainings">
+        <ion-header>
+          <ion-title>
+            {{training.group.name}}
+            <span class="ion-float-right">{{training.datetime | date: "dd.MM.yyyy HH:mm"}}</span>
+          </ion-title>
+        </ion-header>
+        <ion-card-content>
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of training.students">
+              <td>{{item.student.name}}</td>
+              <td>
+                <ion-icon *ngIf="item.status === 1" name="checkmark-circle" color="success" size="small"></ion-icon>
+                <ion-icon *ngIf="item.status === 0" name="help-circle" color="warning" size="small"></ion-icon>
+                <ion-icon *ngIf="item.status === -1" name="close-circle" color="danger" size="small"></ion-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <hr>
+          <ion-card-subtitle style="text-align: center;">
+            Anwesend: {{countStatus(training, 1)}} |
+            Nicht abgemeldet: {{countStatus(training, 0)}} |
+            Abgemeldet: {{countStatus(training, -1)}}
+          </ion-card-subtitle>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+

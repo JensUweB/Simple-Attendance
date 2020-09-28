@@ -1,5 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import {Training, TrainingService} from '../../services/training.service';
+import {AlertController} from '@ionic/angular';
 
 @Component({
   selector: 'app-training-archive',
@@ -8,8 +9,9 @@ import {Training, TrainingService} from '../../services/training.service';
 })
 export class TrainingArchiveComponent implements OnInit {
   public trainings: Training[] = [];
+  public printView = false;
 
-  constructor(private trainingService: TrainingService) {
+  constructor(private trainingService: TrainingService, private alertCtrl: AlertController) {
     this.trainings = this.trainingService.getTrainings();
   }
 
@@ -27,9 +29,26 @@ export class TrainingArchiveComponent implements OnInit {
     }
   }
 
-  removeTraining(training: Training) {
-    this.trainings = this.trainings.filter(item => item.datetime !== training.datetime);
-    this.trainingService.removeTraining(training);
+  async removeTraining(training: Training) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirm delete',
+      message: 'Do you really want to delete this archive entry? This cannot be undone!',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {}
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+            this.trainings = this.trainings.filter(item => item.datetime !== training.datetime);
+            this.trainingService.removeTraining(training);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   countStatus(training: Training, status: number) {

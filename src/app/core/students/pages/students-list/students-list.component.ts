@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild} from '@angular/core';
 import {Student, StudentService} from '../../services/student.service';
-import {AnimationController} from '@ionic/angular';
+import {AlertController, AnimationController} from '@ionic/angular';
 import {Helper} from '../../../../shared/classes/helper.class';
 
 @Component({
@@ -12,7 +12,7 @@ export class StudentsListComponent implements OnInit {
   students: Student[];
   @ViewChild('nameInput') private studentInput;
 
-  constructor(private studentService: StudentService, private animCtrl: AnimationController) {
+  constructor(private studentService: StudentService, private alertCtrl: AlertController) {
     this.students = this.studentService.getStudents();
   }
 
@@ -30,9 +30,25 @@ export class StudentsListComponent implements OnInit {
     }
   }
 
-  deleteStudent(id: string) {
-    this.students = this.students.filter(student => student.id !== id);
-    this.studentService.removeStudent(id);
+  async deleteStudent(id: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirm delete',
+      message: 'Do you really want to delete this student? The archive is not affected by this.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {}
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+            this.students = this.students.filter(student => student.id !== id);
+            this.studentService.removeStudent(id);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
-
 }
