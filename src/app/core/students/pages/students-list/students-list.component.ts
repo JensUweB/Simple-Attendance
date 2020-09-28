@@ -14,6 +14,8 @@ export class StudentsListComponent implements OnInit {
 
   constructor(private studentService: StudentService, private alertCtrl: AlertController) {
     this.students = this.studentService.getStudents();
+    // sort students by name asc
+    this.sort();
   }
 
   ngOnInit() {}
@@ -27,7 +29,20 @@ export class StudentsListComponent implements OnInit {
       this.studentService.addStudent(student);
       this.studentInput.value = null;
       this.students = this.studentService.getStudents();
+      this.sort();
     }
+  }
+
+  sort() {
+    this.students.sort((a, b) => {
+      if (a.name > b.name) {
+        return 1;
+      } else if (a.name === b.name) {
+        return 0;
+      } else {
+        return -1;
+      }
+    });
   }
 
   async deleteStudent(id: string) {

@@ -7,7 +7,8 @@ import {IonicModule} from '@ionic/angular';
 import {FormsModule} from '@angular/forms';
 import {TrainingArchiveComponent} from './pages/training-archive/training-archive.component';
 import {PrintViewComponent} from './components/print-view/print-view.component';
-
+import { Downloader } from '@ionic-native/downloader/ngx';
+import { File } from '@ionic-native/file/ngx';
 
 @NgModule({
   declarations: [
@@ -20,13 +21,15 @@ import {PrintViewComponent} from './components/print-view/print-view.component';
         TrainingRoutingModule,
         IonicModule,
         FormsModule,
-
     ],
   exports: [
       NewTrainingComponent,
       TrainingArchiveComponent,
       PrintViewComponent
   ],
-    providers: []
+    providers: [
+        Downloader,
+        File
+    ]
 })
 export class TrainingModule { }

@@ -40,7 +40,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
     const group = this.groupService.createGroup(this.groupName);
     this.groupName = null;
-    this.groups.push(group);
   }
 
   removeGroup(group: Group) {
