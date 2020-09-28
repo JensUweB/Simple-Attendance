@@ -31,36 +31,4 @@ export class PrintViewComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     return count;
   }
-
-  csvExport() {
-    // Flatten the data to fit into a table
-    const flatData = [];
-    this.trainings.forEach((training) => {
-      training.students.forEach((item) => {
-        flatData.push(
-            {
-              ID: training.id,
-              GroupName: training.group.name,
-              Date: training.datetime,
-              StudentId: item.student.id,
-              StudentName: item.student.name,
-              StudentStatus: item.status
-            }
-        );
-      });
-    });
-    const options = {
-      fieldSeparator: ',',
-      quoteStrings: '"',
-      decimalSeparator: '.',
-      showLabels: true,
-      showTitle: true,
-      title: 'My Awesome CSV',
-      useTextFile: false,
-      useBom: true,
-      useKeysAsHeaders: true,
-    };
-    const csvExporter = new ExportToCsv(options);
-    csvExporter.generateCsv(flatData);
-  }
 }

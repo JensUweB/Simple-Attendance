@@ -7,8 +7,9 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-import {CoreModule} from './core/core.module';
+import { CoreModule } from './core/core.module';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import {CoreModule} from './core/core.module';
       BrowserModule,
       IonicModule.forRoot(),
       AppRoutingModule,
-      CoreModule
+      CoreModule,
+      HttpClientModule,
   ],
   providers: [
     StatusBar,
