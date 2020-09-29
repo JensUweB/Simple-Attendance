@@ -6,40 +6,24 @@
   </ion-row>
   <ion-row id="printArea" #printArea>
     <ion-col>
-      <ion-card *ngFor="let training of trainings">
-        <ion-header>
-          <ion-title>
-            {{training.group.name}}
-            <span class="ion-float-right">{{training.datetime | date: "dd.MM.yyyy HH:mm"}}</span>
-          </ion-title>
-        </ion-header>
-        <ion-card-content>
           <table class="table">
             <thead>
             <tr>
-              <th>Name</th>
-              <th>Status</th>
+              <th>Date</th>
+              <th>Group Name</th>
+              <th>Student Name</th>
+              <th>Student Status</th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let item of training.students">
-              <td>{{item.student.name}}</td>
-              <td>
-                <ion-icon *ngIf="item.status === 1" name="checkmark-circle" color="success" size="small"></ion-icon>
-                <ion-icon *ngIf="item.status === 0" name="help-circle" color="warning" size="small"></ion-icon>
-                <ion-icon *ngIf="item.status === -1" name="close-circle" color="danger" size="small"></ion-icon>
-              </td>
+            <tr *ngFor="let row of flattenData()">
+              <td>{{row.Date  | date: "dd.MM.yyyy HH:mm"}}</td>
+              <td>{{row.GroupName}}</td>
+              <td>{{row.StudentName}}</td>
+              <td>{{row.StudentStatus}}</td>
             </tr>
             </tbody>
           </table>
-          <hr>
-          <ion-card-subtitle style="text-align: center;">
-            Anwesend: {{countStatus(training, 1)}} |
-            Nicht abgemeldet: {{countStatus(training, 0)}} |
-            Abgemeldet: {{countStatus(training, -1)}}
-          </ion-card-subtitle>
-        </ion-card-content>
-      </ion-card>
     </ion-col>
   </ion-row>
 </ion-grid>

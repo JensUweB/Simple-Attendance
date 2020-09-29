@@ -16,7 +16,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
   private readonly groupSub: Subscription;
 
   constructor(private groupService: GroupService, private modalController: ModalController) {
-    this.groupSub = this.groupService.groupsSubject.subscribe((data) => {
+    this.groupSub = this.groupService.getGroups().subscribe((data) => {
       this.groups = data;
     });
   }

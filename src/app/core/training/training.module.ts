@@ -7,8 +7,8 @@ import {IonicModule} from '@ionic/angular';
 import {FormsModule} from '@angular/forms';
 import {TrainingArchiveComponent} from './pages/training-archive/training-archive.component';
 import {PrintViewComponent} from './components/print-view/print-view.component';
-import { Downloader } from '@ionic-native/downloader/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @NgModule({
   declarations: [
@@ -28,8 +28,8 @@ import { File } from '@ionic-native/file/ngx';
       PrintViewComponent
   ],
     providers: [
-        Downloader,
-        File
+        File,
+        SocialSharing,
     ]
 })
 export class TrainingModule { }
