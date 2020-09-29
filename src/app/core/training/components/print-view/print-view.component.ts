@@ -11,7 +11,8 @@ export class PrintViewComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() trainings: Training[];
   @ViewChild('#printArea') printArea;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
     document.body.setAttribute('color-theme', 'light');
@@ -30,5 +31,25 @@ export class PrintViewComponent implements OnInit, OnDestroy, AfterViewInit {
       if (student.status === status) { count ++; }
     });
     return count;
+  }
+
+  flattenData() {
+    // Flatten the data to fit into a table
+    const flatData = [];
+    this.trainings.forEach((training) => {
+      training.students.forEach((item) => {
+        flatData.push(
+            {
+              ID: training.id,
+              GroupName: training.group.name,
+              Date: training.datetime,
+              StudentId: item.student.id,
+              StudentName: item.student.name,
+              StudentStatus: item.status
+            }
+        );
+      });
+    });
+    return  flatData;
   }
 }

@@ -1,9 +1,11 @@
-import { Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Training, TrainingService} from '../../services/training.service';
 import {ActionSheetController, AlertController, Platform} from '@ionic/angular';
 import {ExportToCsv} from 'export-to-csv';
-import {Downloader, DownloadRequest, NotificationVisibility} from '@ionic-native/downloader/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import * as PDFMake from 'pdfmake/build/pdfmake.js';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 @Component({
   selector: 'app-training-archive',
@@ -19,9 +21,12 @@ export class TrainingArchiveComponent implements OnInit {
       private alertCtrl: AlertController,
       private actionSheetCtrl: ActionSheetController,
       private platform: Platform,
-      private downloader: Downloader,
       private file: File,
+      private socialSharing: SocialSharing,
   ) {
+    // Bugfix for PDFMake
+    (window as any).pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
     this.trainings = this.trainingService.getTrainings();
   }
 
@@ -79,7 +84,7 @@ export class TrainingArchiveComponent implements OnInit {
         {
           text: 'Print',
           icon: 'print',
-          handler: () => { this.printView = true; this.doPrint(); }
+          handler: () => { this.doPrint(); }
         },
         {
           text: 'Cancel',
@@ -93,21 +98,7 @@ export class TrainingArchiveComponent implements OnInit {
 
   csvExport() {
     // Flatten the data to fit into a table
-    const flatData = [];
-    this.trainings.forEach((training) => {
-      training.students.forEach((item) => {
-        flatData.push(
-            {
-              ID: training.id,
-              GroupName: training.group.name,
-              Date: training.datetime,
-              StudentId: item.student.id,
-              StudentName: item.student.name,
-              StudentStatus: item.status
-            }
-        );
-      });
-    });
+    const flatData = this.flattenData();
     const options = {
       fieldSeparator: ',',
       quoteStrings: '"',
@@ -126,7 +117,10 @@ export class TrainingArchiveComponent implements OnInit {
       const blob = new Blob([file], {type: 'text/csv'});
       const path = this.file.externalApplicationStorageDirectory;
       this.file.writeFile(path, 'archive.csv', file, {replace: true, append: false})
-          .then((result) => { alert('CSV saved to: ' + path); },
+          .then((result) => {
+            alert('CSV saved to: ' + path);
+            // this.socialSharing.share(null, null, 'archive.csv', path);
+            },
               (error) => { alert(error.message); });
     } else {
       csvExporter.generateCsv(flatData);
@@ -134,17 +128,70 @@ export class TrainingArchiveComponent implements OnInit {
   }
 
   doPrint() {
-    this.printView = false;
-    /*
-    this.printer.isAvailable().then((onSuccess) => {
-      const options: PrintOptions = {
-        name: 'Training Archive',
-        duplex: true,
-        orientation: 'landscape',
-        monochrome: false
+    if (this.platform.is('cordova') || this.platform.is('capacitor') || true) {
+      const docDefinition = {
+        pageSize: 'A4',
+        pageOrientation: 'landscape',
+        content: [
+          { text: 'Training Overview', fontSize: 20 },
+          {
+            table: {
+              headerRows: 6,
+              body: [
+                  ['ID', 'Group Name', 'Date', 'Student Name', 'Student Status'],
+                      ...this.getAsArray()
+              ]
+            }
+          }
+        ]
       };
-      this.printer.print(document.getElementById('container'), options).then(() => this.printView = false);
+      PDFMake.createPdf(docDefinition).print();
+      this.printView = false;
+    } else {
+      setTimeout(() => {
+        window.print();
+        this.printView = false;
+      }, 250);
+    }
+  }
+
+  flattenData() {
+    // Flatten the data to fit into a table
+    const flatData = [];
+    this.trainings.forEach((training) => {
+      training.students.forEach((item) => {
+        flatData.push(
+            {
+              ID: training.id,
+              GroupName: training.group.name,
+              Date: training.datetime,
+              StudentId: item.student.id,
+              StudentName: item.student.name,
+              StudentStatus: item.status
+            }
+        );
+      });
     });
-     */
+    return  flatData;
+  }
+  getAsArray() {
+    // Flatten the data to fit into a table
+    const flatData = [];
+    this.trainings.forEach((training) => {
+      training.students.forEach((item) => {
+        flatData.push(
+            [
+              training.id,
+              training.group.name,
+              training.datetime.toString(),
+              item.student.name,
+              item.status + ''
+            ]
+        );
+      });
+    });
+    return  flatData;
   }
 }
+
+

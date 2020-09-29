@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Student} from '../../students/services/student.service';
 import {Helper} from '../../../shared/classes/helper.class';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 export interface Group {
   id: string;
@@ -14,11 +14,11 @@ export interface Group {
 })
 export class GroupService {
   private groups: Group[];
-  public groupsSubject: BehaviorSubject<Group[]>;
+  private groupsSubject: BehaviorSubject<Group[]>;
 
   constructor() {
-    this.groupsSubject = new BehaviorSubject<Group[]>([]);
     this.load();
+    this.groupsSubject = new BehaviorSubject<Group[]>([]);
   }
 
   /**
@@ -30,6 +30,11 @@ export class GroupService {
       this.groups.push(group);
     }
     this.save();
+  }
+
+  getGroups(): Observable<Group[]> {
+    this.groupsSubject.next(this.groups);
+    return this.groupsSubject.asObservable();
   }
 
   /**
@@ -98,7 +103,6 @@ export class GroupService {
    */
   save() {
     localStorage.setItem('groups', JSON.stringify(this.groups));
-    console.log('EMITTING NEW GROUPS Arr!');
     this.groupsSubject.next(this.groups);
   }
 
@@ -107,11 +111,12 @@ export class GroupService {
    */
   load() {
     const data = localStorage.getItem('groups');
+    this.groups = [];
     if (data) {
       this.groups = JSON.parse(data);
-    } else {
-      this.groups = [];
     }
-    this.groupsSubject.next(this.groups);
+    if (this.groupsSubject) {
+      this.groupsSubject.next(this.groups);
+    }
   }
 }

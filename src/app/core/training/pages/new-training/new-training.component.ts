@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {StudentService} from '../../../students/services/student.service';
 import {Training, TrainingService} from '../../services/training.service';
 import {Helper} from '../../../../shared/classes/helper.class';
@@ -27,13 +27,14 @@ private groupSub: Subscription;
       private trainingService: TrainingService,
       public groupService: GroupService,
   ) {
-     this.groupSub = this.groupService.groupsSubject.subscribe((data) => {
-       this.groups = data;
-       console.log('Got new groups data!');
-     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.groupSub = this.groupService.getGroups().subscribe((data) => {
+      this.groups = data;
+      console.log('Got new groups data!');
+    });
+  }
 
   startTraining() {
     const arr = [];
