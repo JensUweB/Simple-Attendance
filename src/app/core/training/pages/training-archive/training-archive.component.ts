@@ -128,7 +128,6 @@ export class TrainingArchiveComponent implements OnInit {
   }
 
   doPrint() {
-    if (this.platform.is('cordova') || this.platform.is('capacitor') || true) {
       const docDefinition = {
         pageSize: 'A4',
         pageOrientation: 'landscape',
@@ -145,14 +144,19 @@ export class TrainingArchiveComponent implements OnInit {
           }
         ]
       };
-      PDFMake.createPdf(docDefinition).print();
-      this.printView = false;
+    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+      PDFMake.createPdf(docDefinition).getBlob((blob) => {
+      const path = this.file.externalApplicationStorageDirectory;
+        this.file.writeFile(path, 'archive.pdf', blob, {replace: true, append: false})
+        .then((result) => {
+          alert('PDF saved to: ' + path);
+          },
+          (error) => { alert(error.message); });
+      });
     } else {
-      setTimeout(() => {
-        window.print();
-        this.printView = false;
-      }, 250);
+      PDFMake.createPdf(docDefinition).download();
     }
+    this.printView = false;
   }
 
   flattenData() {
