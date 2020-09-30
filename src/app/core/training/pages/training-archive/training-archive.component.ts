@@ -119,7 +119,7 @@ export class TrainingArchiveComponent implements OnInit {
       this.file.writeFile(path, 'archive.csv', file, {replace: true, append: false})
           .then((result) => {
             alert('CSV saved to: ' + path);
-            // this.socialSharing.share(null, null, 'archive.csv', path);
+            // this.socialSharing.share(null, 'archive.csv', 'archive.csv',file);
             },
               (error) => { alert(error.message); });
     } else {
