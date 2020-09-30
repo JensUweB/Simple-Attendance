@@ -1,11 +1,11 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/groups"></ion-back-button>
     </ion-buttons>
     <ion-title><h2 id="title">{{group.name}}</h2></ion-title>
     <ion-buttons slot="end" style="margin-right: 20px;">
-      <ion-item (click)="removeGroup()">
+      <ion-item color="translucent" (click)="removeGroup()">
         <ion-icon name="trash-outline" color="danger"></ion-icon>
       </ion-item>
     </ion-buttons>

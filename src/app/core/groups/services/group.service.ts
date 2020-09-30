@@ -7,18 +7,20 @@ export interface Group {
   id: string;
   name: string;
   students: Student[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
-  private groups: Group[];
+  public groups: Group[];
   private groupsSubject: BehaviorSubject<Group[]>;
 
   constructor() {
-    this.load();
     this.groupsSubject = new BehaviorSubject<Group[]>([]);
+    this.load();
   }
 
   /**
@@ -33,7 +35,6 @@ export class GroupService {
   }
 
   getGroups(): Observable<Group[]> {
-    this.groupsSubject.next(this.groups);
     return this.groupsSubject.asObservable();
   }
 
@@ -45,7 +46,9 @@ export class GroupService {
     const group: Group = {
       id: Helper.uuid(),
       name,
-      students: []
+      students: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
     this.addGroup(group);
     return group;
@@ -70,6 +73,7 @@ export class GroupService {
     this.groups.forEach(g => {
       if (g.id === group.id) {
         g = group;
+        g.updatedAt = new Date();
         found = true;
       }
     });
@@ -102,7 +106,8 @@ export class GroupService {
    * Saves the data to local storage
    */
   save() {
-    localStorage.setItem('groups', JSON.stringify(this.groups));
+    console.log('SAVING GROUP DATA ', this.groups);
+    localStorage.setItem('groups', JSON.stringify([...this.groups]));
     this.groupsSubject.next(this.groups);
   }
 
@@ -114,6 +119,10 @@ export class GroupService {
     this.groups = [];
     if (data) {
       this.groups = JSON.parse(data);
+      this.groups.forEach((group) => {
+        group.createdAt = new Date(group.createdAt);
+        group.updatedAt = new Date(group.updatedAt);
+      });
     }
     if (this.groupsSubject) {
       this.groupsSubject.next(this.groups);

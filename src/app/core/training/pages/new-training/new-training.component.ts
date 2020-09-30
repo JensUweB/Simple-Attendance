@@ -32,7 +32,7 @@ private groupSub: Subscription;
   ngOnInit() {
     this.groupSub = this.groupService.getGroups().subscribe((data) => {
       this.groups = data;
-      console.log('Got new groups data!');
+      console.log('Got new groups data! ', data);
     });
   }
 
@@ -57,6 +57,7 @@ private groupSub: Subscription;
   }
 
   groupSelectChange() {
-    this.selectedGroup = this.groups.filter((item) => item.id === this.groupId)[0];
+    console.log('Groups: ', this.groupService.groups);
+    this.selectedGroup = this.groupService.getAllGroups().filter((item) => item.id === this.groupId)[0];
   }
 }
