@@ -24,7 +24,9 @@ export class StudentsListComponent implements OnInit {
     if (this.studentInput.value) {
       const student: Student = {
         id: Helper.uuid(),
-        name: this.studentInput.value
+        name: this.studentInput.value,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
       this.studentService.addStudent(student);
       this.studentInput.value = null;

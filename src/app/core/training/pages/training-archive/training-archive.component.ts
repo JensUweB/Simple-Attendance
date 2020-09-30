@@ -138,7 +138,7 @@ export class TrainingArchiveComponent implements OnInit {
               headerRows: 6,
               body: [
                   ['ID', 'Group Name', 'Date', 'Student Name', 'Student Status'],
-                      ...this.getAsArray()
+                      ...this.getDataAsArray()
               ]
             }
           }
@@ -159,6 +159,9 @@ export class TrainingArchiveComponent implements OnInit {
     this.printView = false;
   }
 
+  /**
+   * Returns the training array as flattened object array without any nested objects / arrays
+   */
   flattenData() {
     // Flatten the data to fit into a table
     const flatData = [];
@@ -178,7 +181,12 @@ export class TrainingArchiveComponent implements OnInit {
     });
     return  flatData;
   }
-  getAsArray() {
+
+  /**
+   * Returns the trainig array as flattened two dimensional string array
+   * for easier use in tables
+   */
+  getDataAsArray() {
     // Flatten the data to fit into a table
     const flatData = [];
     this.trainings.forEach((training) => {

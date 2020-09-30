@@ -4,6 +4,8 @@ import {BehaviorSubject} from 'rxjs';
 export interface Student {
   id: string;
   name: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 @Injectable({
@@ -59,6 +61,11 @@ export class StudentService {
     this.students = JSON.parse(localStorage.getItem('students'));
     if (!this.students) {
       this.students = [];
+    } else {
+      this.students.forEach((student) => {
+        student.createdAt = new Date(student.createdAt);
+        student.updatedAt = new Date(student.updatedAt);
+      });
     }
     this.studentsSubject.next(this.students);
   }

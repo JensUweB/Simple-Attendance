@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -34,7 +34,7 @@
       <ion-row *ngIf="training">
         <ion-col>
           <p><strong class="capitalize">{{training.group.name}}, {{selectedDate | date: "dd.MMM.yyyy HH:mm"}}</strong></p>
-          <ion-row *ngFor="let item of training.students" style="">
+          <ion-row *ngFor="let item of training.students">
             <ion-col size="6">
                 <ion-label>{{item.student.name}}</ion-label>
             </ion-col>
