@@ -47,10 +47,10 @@ export class StudentsListComponent implements OnInit {
     });
   }
 
-  async deleteStudent(id: string) {
+  async deleteStudent(student: Student) {
     const alert = await this.alertCtrl.create({
       header: 'Confirm delete',
-      message: 'Do you really want to delete this student? The archive is not affected by this.',
+      message: 'Do you really want to remove ' + student.name +'? This student will also get removed from all existing groups! This cannot be undone.',
       buttons: [
         {
           text: 'Cancel',
@@ -60,8 +60,8 @@ export class StudentsListComponent implements OnInit {
         {
           text: 'Confirm',
           handler: () => {
-            this.students = this.students.filter(student => student.id !== id);
-            this.studentService.removeStudent(id);
+            this.students = this.students.filter((item) => item.id !== student.id);
+            this.studentService.removeStudent(student.id);
           }
         }
       ]
