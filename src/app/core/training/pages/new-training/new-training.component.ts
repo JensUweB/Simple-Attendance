@@ -1,9 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {StudentService} from '../../../students/services/student.service';
+import {Component, OnInit} from '@angular/core';
 import {Training, TrainingService} from '../../services/training.service';
 import {Helper} from '../../../../shared/classes/helper.class';
 import {Group, GroupService} from '../../../groups/services/group.service';
 import {Subscription} from 'rxjs';
+import { ToastController } from '@ionic/angular';
 
 
 
@@ -23,9 +23,9 @@ export class NewTrainingComponent implements OnInit {
 private groupSub: Subscription;
 
   constructor(
-      private studentService: StudentService,
       private trainingService: TrainingService,
-      public groupService: GroupService,
+      private groupService: GroupService,
+      private toastController: ToastController,
   ) {
   }
 
@@ -52,12 +52,17 @@ private groupSub: Subscription;
     };
   }
 
-  saveTraining() {
+  async saveTraining() {
     this.trainingService.addTraining(this.training);
+    const toast = await this.toastController.create({
+      message: 'Training session has been saved.',
+      duration: 4000,
+      color: 'success'
+    });
+    toast.present();
   }
 
   groupSelectChange() {
-    console.log('Groups: ', this.groupService.groups);
     this.selectedGroup = this.groupService.getAllGroups().filter((item) => item.id === this.groupId)[0];
   }
 }
