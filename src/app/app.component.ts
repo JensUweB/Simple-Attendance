@@ -13,7 +13,7 @@ import { GroupService } from './core/groups/services/group.service';
 })
 export class AppComponent implements OnInit, AfterViewInit {
   public selectedIndex = 0;
-  public isDarkMode = false;
+  public isDarkMode: boolean;
   public appPages = [
     {
       title: 'Groups',
@@ -72,16 +72,25 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+
+    // Check & set color theme. Dark theme is default
+    let theme = localStorage.getItem('theme');
+    if (theme === 'dark') {
+      this.isDarkMode = true;
+    } else if (theme === 'light') {
+      this.isDarkMode = false;
+    } else {
+      theme = 'dark';
+      localStorage.setItem('theme', theme);
+      this.isDarkMode = true;
+    }
+    document.body.setAttribute('color-theme', theme);
   }
 
   ngOnInit() {
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
-    }
-    document.body.setAttribute('color-theme', localStorage.getItem('theme'));
-    if (localStorage.getItem('theme') === 'dark') {
-      this.isDarkMode = true;
     }
   }
 
