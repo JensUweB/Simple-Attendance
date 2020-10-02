@@ -17,9 +17,20 @@
     <ion-grid *ngIf="!printView">
       <ion-row>
         <ion-col>
+          <ion-item>
+            <ion-label>Group Filter</ion-label>
+            <ion-select interface="popover" (ionChange)="setGroupFilter($event)">
+              <ion-select-option value="" default>All Groups</ion-select-option>
+              <ion-select-option *ngFor="let group of groups" [value]="group.id">{{group.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
           <p>This is a list of previous training sessions!</p>
           <div *ngIf="trainings">
-            <ion-row *ngFor="let training of trainings">
+            <ion-row *ngFor="let training of filteredTrainings">
               <ion-col>
                 <ion-card style="cursor: pointer;" [id]="'card-' + training.id" (click)="toggleList(training.id)">
                   <ion-card-header>

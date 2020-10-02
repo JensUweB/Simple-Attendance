@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Training, TrainingService} from '../../services/training.service';
 import {ActionSheetController, AlertController, Platform} from '@ionic/angular';
 import {ExportToCsv} from 'export-to-csv';
@@ -6,18 +6,27 @@ import { File } from '@ionic-native/file/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import * as PDFMake from 'pdfmake/build/pdfmake.js';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
+import { Group, GroupService } from 'src/app/core/groups/services/group.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-training-archive',
   templateUrl: './training-archive.component.html',
   styleUrls: ['./training-archive.component.scss'],
 })
-export class TrainingArchiveComponent implements OnInit {
-  public trainings: Training[] = [];
+export class TrainingArchiveComponent implements OnInit, OnDestroy {
   public printView = false;
+  public trainings: Training[] = [];
+  public filteredTrainings: Training[] = [];
+  public groups: Group[] = [];
+  public groupFilter: string;
+  // public minDateFilter: Date = new Date('2020-10-02');
+
+  private groupSub: Subscription;
 
   constructor(
       private trainingService: TrainingService,
+      private groupService: GroupService,
       private alertCtrl: AlertController,
       private actionSheetCtrl: ActionSheetController,
       private platform: Platform,
@@ -28,9 +37,19 @@ export class TrainingArchiveComponent implements OnInit {
     (window as any).pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
     this.trainings = this.trainingService.getTrainings();
+    this.filteredTrainings = this.trainings;
+    this.groupSub = this.groupService.getGroups().subscribe((data) => {
+      this.groups = data;
+    });
   }
 
   ngOnInit() {}
+
+  ngOnDestroy() {
+    if (this.groupSub) {
+      this.groupSub.unsubscribe();
+    }
+  }
 
   toggleList(id: string) {
     const eleContent = document.getElementById('content-' + id);
@@ -96,6 +115,9 @@ export class TrainingArchiveComponent implements OnInit {
     await actionSheet.present();
   }
 
+  /**
+   * Exports filteredTrainings in csv format
+   */
   csvExport() {
     // Flatten the data to fit into a table
     const flatData = this.flattenData();
@@ -127,6 +149,9 @@ export class TrainingArchiveComponent implements OnInit {
     }
   }
 
+  /**
+   * Prints filteredTrainings in table format as PDF
+   */
   doPrint() {
       const docDefinition = {
         pageSize: 'A4',
@@ -165,20 +190,22 @@ export class TrainingArchiveComponent implements OnInit {
   flattenData() {
     // Flatten the data to fit into a table
     const flatData = [];
-    this.trainings.forEach((training) => {
-      training.students.forEach((item) => {
-        flatData.push(
-            {
-              ID: training.id,
-              GroupName: training.group.name,
-              Date: training.datetime,
-              StudentId: item.student.id,
-              StudentName: item.student.name,
-              StudentStatus: item.status
-            }
-        );
+    if (this.filteredTrainings.length > 0) {
+      this.filteredTrainings.forEach((training) => {
+        training.students.forEach((item) => {
+          flatData.push(
+              {
+                ID: training.id,
+                GroupName: training.group.name,
+                Date: training.datetime,
+                StudentId: item.student.id,
+                StudentName: item.student.name,
+                StudentStatus: item.status
+              }
+          );
+        });
       });
-    });
+    }
     return  flatData;
   }
 
@@ -189,20 +216,44 @@ export class TrainingArchiveComponent implements OnInit {
   getDataAsArray() {
     // Flatten the data to fit into a table
     const flatData = [];
-    this.trainings.forEach((training) => {
-      training.students.forEach((item) => {
-        flatData.push(
-            [
-              training.id,
-              training.group.name,
-              training.datetime.toString(),
-              item.student.name,
-              item.status + ''
-            ]
-        );
+    if (this.filteredTrainings.length > 0) {
+      this.filteredTrainings.forEach((training) => {
+        training.students.forEach((item) => {
+          flatData.push(
+              [
+                training.id,
+                training.group.name,
+                training.datetime.toString(),
+                item.student.name,
+                item.status + ''
+              ]
+          );
+        });
       });
-    });
+    }
     return  flatData;
+  }
+
+  /**
+   * Sets the selected groupFilter value and runs applyFilters()
+   * @param event ion-select event object
+   */
+  setGroupFilter(event) {
+    this.groupFilter = event.detail.value;
+    this.applyFilters();
+  }
+
+  /**
+   * Applies all filters onto trainings array one after another
+   */
+  applyFilters() {
+    this.filteredTrainings = [...this.trainings];
+    if (this.groupFilter && this.groupFilter !== '') {
+      this.filteredTrainings = this.filteredTrainings.filter((training) => training.group.id === this.groupFilter);
+    }
+    /* if (this.minDateFilter) {
+      this.filteredTrainings = this.filteredTrainings.filter((training) => training.datetime.getTime() >= this.minDateFilter.getTime());
+    } */
   }
 }
 
