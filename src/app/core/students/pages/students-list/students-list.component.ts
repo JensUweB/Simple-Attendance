@@ -1,24 +1,42 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Student, StudentService} from '../../services/student.service';
-import {AlertController, AnimationController} from '@ionic/angular';
+import {AlertController} from '@ionic/angular';
 import {Helper} from '../../../../shared/classes/helper.class';
+import { Group, GroupService } from 'src/app/core/groups/services/group.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-students-list',
   templateUrl: './students-list.component.html',
   styleUrls: ['./students-list.component.scss'],
 })
-export class StudentsListComponent implements OnInit {
-  students: Student[];
+export class StudentsListComponent implements OnInit, OnDestroy {
   @ViewChild('nameInput') private studentInput;
+  public students: Student[];
+  public groups: Group[];
 
-  constructor(private studentService: StudentService, private alertCtrl: AlertController) {
+  private groupSub: Subscription;
+
+  constructor(
+    private studentService: StudentService,
+    private groupService: GroupService,
+    private alertCtrl: AlertController
+  ) {
     this.students = this.studentService.getStudents();
     // sort students by name asc
     this.sort();
+    this.groupSub = this.groupService.getGroups().subscribe((data) => {
+      this.groups = data;
+    });
   }
 
   ngOnInit() {}
+
+  ngOnDestroy() {
+    if (this.groupSub) {
+      this.groupSub.unsubscribe();
+    }
+  }
 
   addStudent() {
     if (this.studentInput.value) {
@@ -67,5 +85,15 @@ export class StudentsListComponent implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  getStudentGroupsCount(id: string): number {
+    let count = 0;
+    this.groups.forEach((group) => {
+      if (group.students.some((student) => student.id === id)) {
+        count ++;
+      }
+    });
+    return count;
   }
 }
