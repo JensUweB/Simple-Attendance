@@ -106,7 +106,6 @@ export class GroupService {
    * Saves the data to local storage
    */
   save() {
-    console.log('SAVING GROUP DATA ', this.groups);
     localStorage.setItem('groups', JSON.stringify([...this.groups]));
     this.groupsSubject.next(this.groups);
   }

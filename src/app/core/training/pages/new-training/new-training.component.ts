@@ -32,7 +32,6 @@ private groupSub: Subscription;
   ngOnInit() {
     this.groupSub = this.groupService.getGroups().subscribe((data) => {
       this.groups = data;
-      console.log('Got new groups data! ', data);
     });
   }
 
