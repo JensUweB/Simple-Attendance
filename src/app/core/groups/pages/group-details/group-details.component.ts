@@ -14,6 +14,7 @@ export class GroupDetailsComponent implements OnInit {
   public group: Group;
   public allStudents: Student[];
   public selectedStudents: string[];
+  public studentsToAdd: Student[];
 
   private studentsSub: Subscription;
 
@@ -26,7 +27,10 @@ export class GroupDetailsComponent implements OnInit {
   ) {
     const id = this.route.snapshot.paramMap.get('id');
     this.group = this.groupService.getGroupById(id);
-    this.studentsSub = this.studentService.studentsSubject.subscribe((data) => this.allStudents = data);
+    this.studentsSub = this.studentService.studentsSubject.subscribe((data) => {
+      this.allStudents = data;
+      this.initStudentsToAdd();
+    });
 
     this.selectedStudents = [];
     this.group.students.forEach(student => this.selectedStudents.push(student.id));
@@ -34,14 +38,21 @@ export class GroupDetailsComponent implements OnInit {
 
   ngOnInit() {}
 
+  initStudentsToAdd() {
+    this.studentsToAdd = this.allStudents.filter((student) => !this.group.students.some((item) => item.id === student.id));
+    this.selectedStudents = [];
+  }
+
   onSelectionChange() {
     if (!this.selectedStudents || this.selectedStudents.length <= 0) { return; }
-    this.group.students = this.allStudents.filter(item => this.selectedStudents.some(id => id === item.id));
+    const canAdd = this.allStudents.filter(item => this.selectedStudents.some(id => id === item.id));
+    this.group.students.push(...canAdd);
     this.save();
   }
 
   save() {
     this.groupService.updateGroup(this.group);
+    this.initStudentsToAdd();
   }
 
   async removeGroup() {
@@ -64,5 +75,10 @@ export class GroupDetailsComponent implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  async removeStudent(student: Student) {
+    this.group.students = this.group.students.filter((item) => item.id !== student.id);
+    this.save();
   }
 }
