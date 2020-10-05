@@ -10,6 +10,7 @@ import {PrintViewComponent} from './components/print-view/print-view.component';
 import { File } from '@ionic-native/file/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import {GroupModule} from '../groups/group.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
         TrainingRoutingModule,
         IonicModule,
         FormsModule,
+        GroupModule,
     ],
   exports: [
       NewTrainingComponent,

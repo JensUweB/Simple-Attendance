@@ -20,7 +20,7 @@ export class NewTrainingComponent implements OnInit {
   public groups: Group[];
   public training: Training;
 
-private groupSub: Subscription;
+  private groupSub: Subscription;
 
   constructor(
       private trainingService: TrainingService,
@@ -29,10 +29,19 @@ private groupSub: Subscription;
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewDidEnter() {
     this.groupSub = this.groupService.getGroups().subscribe((data) => {
       this.groups = data;
+      console.log('New Training groups: ', data);
     });
+  }
+
+  ionViewWillLeave() {
+    if (this.groupSub) {
+      this.groupSub.unsubscribe();
+    }
   }
 
   startTraining() {
@@ -58,10 +67,22 @@ private groupSub: Subscription;
       duration: 4000,
       color: 'success'
     });
-    toast.present();
+    await toast.present();
   }
 
   groupSelectChange() {
     this.selectedGroup = this.groupService.getAllGroups().filter((item) => item.id === this.groupId)[0];
+  }
+
+  loadGroups() {
+    const data = localStorage.getItem('groups');
+    this.groups = [];
+    if (data) {
+      this.groups = JSON.parse(data);
+      this.groups.forEach((group) => {
+        group.createdAt = new Date(group.createdAt);
+        group.updatedAt = new Date(group.updatedAt);
+      });
+    }
   }
 }
