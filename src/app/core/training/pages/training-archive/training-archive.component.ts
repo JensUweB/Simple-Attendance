@@ -8,6 +8,7 @@ import * as PDFMake from 'pdfmake/build/pdfmake.js';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import { Group, GroupService } from 'src/app/core/groups/services/group.service';
 import { Subscription } from 'rxjs';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 @Component({
   selector: 'app-training-archive',
@@ -20,6 +21,7 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
   public filteredTrainings: Training[] = [];
   public groups: Group[] = [];
   public groupFilter: string;
+  public now = new Date();
   // public minDateFilter: Date = new Date('2020-10-02');
 
   private groupSub: Subscription;
@@ -32,6 +34,7 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
       private platform: Platform,
       private file: File,
       private socialSharing: SocialSharing,
+      private androidPermissions: AndroidPermissions
   ) {
     // Bugfix for PDFMake
     (window as any).pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -137,13 +140,30 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
       const file = csvExporter.generateCsv(flatData, true);
       const blob = new Blob([file], {type: 'text/csv'});
-      const path = this.file.externalApplicationStorageDirectory;
-      this.file.writeFile(path, 'archive.csv', file, {replace: true, append: false})
-          .then((result) => {
-            alert('CSV saved to: ' + path);
-            // this.socialSharing.share(null, 'archive.csv', 'archive.csv',file);
-            },
-              (error) => { alert(error.message); });
+      const path = this.file.externalRootDirectory + '/Download/';
+      this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
+          .then((status) => {
+            if (status.hasPermission) {
+              this.file.writeFile(path, `training-archive-${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}.csv`,
+                  file, {replace: true, append: false})
+                  .then((result) => {
+                        alert('CSV saved to: ' + path);
+                        // this.socialSharing.share(null, 'archive.csv', 'archive.csv',file);
+                      },
+                      (error) => { alert(error.message); });
+            } else {
+              this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
+                  .then(() => {
+                    this.file.writeFile(path, `training-archive-${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}.csv`,
+                        file, {replace: true, append: false})
+                        .then((result) => {
+                              alert('CSV saved to: ' + path);
+                              // this.socialSharing.share(null, 'archive.csv', 'archive.csv',file);
+                            },
+                            (error) => { alert(error.message); });
+                  });
+            }
+          });
     } else {
       csvExporter.generateCsv(flatData);
     }
@@ -170,13 +190,29 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
         ]
       };
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      PDFMake.createPdf(docDefinition).getBlob((blob) => {
-      const path = this.file.externalApplicationStorageDirectory;
-        this.file.writeFile(path, 'archive.pdf', blob, {replace: true, append: false})
-        .then((result) => {
-          alert('PDF saved to: ' + path);
-          },
-          (error) => { alert(error.message); });
+      PDFMake.createPdf(docDefinition).getBlob((blob: Blob) => {
+      const path = this.file.externalRootDirectory + '/Download/';
+        this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
+            .then((status) => {
+              if (status.hasPermission) {
+                this.file.writeFile(path, `training-archive-${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}.pdf`,
+                    blob, {replace: true, append: false})
+                    .then((result) => {
+                          alert('PDF saved to: ' + path);
+                        },
+                        (error) => { alert(error.message); });
+              } else {
+                this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
+                    .then(() => {
+                      this.file.writeFile(path, `training-archive-${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}.pdf`,
+                          blob, {replace: true, append: false})
+                          .then((result) => {
+                                alert('PDF saved to: ' + path);
+                              },
+                              (error) => { alert(error.message); });
+                    });
+              }
+            });
       });
     } else {
       PDFMake.createPdf(docDefinition).download();

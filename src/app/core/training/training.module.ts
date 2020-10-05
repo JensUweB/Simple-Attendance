@@ -9,6 +9,7 @@ import {TrainingArchiveComponent} from './pages/training-archive/training-archiv
 import {PrintViewComponent} from './components/print-view/print-view.component';
 import { File } from '@ionic-native/file/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
     providers: [
         File,
         SocialSharing,
+        AndroidPermissions,
     ]
 })
 export class TrainingModule { }
