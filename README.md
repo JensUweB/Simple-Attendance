@@ -13,5 +13,5 @@ An ionic app for simple offline only attendance tracking
 * or as native App with `ionic capacitor run android` (Android Studio must bee installed)
 
 ## Known Bugs
-* Changes of group students list don't get emittet correctly from groupService
+* Group changes don't appear on "new training" page. App restart needed.
 * Sometimes the wrong menu item is set as active
