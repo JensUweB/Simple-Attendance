@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
+import {enterAnimation} from './core/animations/nav-animation';
 
 
 @NgModule({
@@ -17,7 +18,7 @@ import { CoreModule } from './core/core.module';
   entryComponents: [],
   imports: [
       BrowserModule,
-      IonicModule.forRoot(),
+      IonicModule.forRoot({ navAnimation: enterAnimation }),
       AppRoutingModule,
       CoreModule,
       HttpClientModule,
@@ -25,7 +26,7 @@ import { CoreModule } from './core/core.module';
   providers: [
     StatusBar,
     SplashScreen,
-    // { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
 })
