@@ -17,6 +17,6 @@ import {TrainingModule} from './training/training.module';
   ],
   exports: [
 
-  ]
+  ],
 })
 export class CoreModule { }

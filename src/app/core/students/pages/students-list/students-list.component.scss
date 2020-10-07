@@ -1,3 +1,15 @@
+ion-item {
+  overflow: auto;
+}
 .icon-btn {
   float: right;
+}
+
+.name-label {
+  font-size: medium;
+}
+
+ion-badge {
+  float: left;
+  margin-left: 10px;
 }

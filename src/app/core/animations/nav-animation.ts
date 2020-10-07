@@ -1,7 +1,7 @@
 import { AnimationController, Animation } from '@ionic/angular';
 
 export const enterAnimation = (baseEl: HTMLElement, opts?: any): Animation => {
-    const DURATION = 350;
+    const DURATION = 300;
     const animationCtrl = new AnimationController();
 
     if (opts.direction === 'forward') {
