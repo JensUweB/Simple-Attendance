@@ -9,6 +9,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import { Group, GroupService } from 'src/app/core/groups/services/group.service';
 import { Subscription } from 'rxjs';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import {PrintService} from '../../../../shared/services/print.service';
 
 @Component({
   selector: 'app-training-archive',
@@ -34,7 +35,8 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
       private platform: Platform,
       private file: File,
       private socialSharing: SocialSharing,
-      private androidPermissions: AndroidPermissions
+      private androidPermissions: AndroidPermissions,
+      private printService: PrintService
   ) {
     // Bugfix for PDFMake
     (window as any).pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -124,100 +126,15 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
   csvExport() {
     // Flatten the data to fit into a table
     const flatData = this.flattenData();
-    const options = {
-      fieldSeparator: ',',
-      quoteStrings: '"',
-      decimalSeparator: '.',
-      showLabels: true,
-      showTitle: true,
-      title: 'Training Archive Export',
-      useTextFile: false,
-      useBom: true,
-      useKeysAsHeaders: true,
-    };
-    const csvExporter = new ExportToCsv(options);
-
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      const file = csvExporter.generateCsv(flatData, true);
-      const blob = new Blob([file], {type: 'text/csv'});
-      const path = this.file.externalRootDirectory + '/Download/';
-      this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
-          .then((status) => {
-            if (status.hasPermission) {
-              this.file.writeFile(path, `training-archive-${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}.csv`,
-                  file, {replace: true, append: false})
-                  .then((result) => {
-                        alert('CSV saved to: ' + path);
-                        // this.socialSharing.share(null, 'archive.csv', 'archive.csv',file);
-                      },
-                      (error) => { alert(error.message); });
-            } else {
-              this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
-                  .then(() => {
-                    this.file.writeFile(path, `training-archive-${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}.csv`,
-                        file, {replace: true, append: false})
-                        .then((result) => {
-                              alert('CSV saved to: ' + path);
-                              // this.socialSharing.share(null, 'archive.csv', 'archive.csv',file);
-                            },
-                            (error) => { alert(error.message); });
-                  });
-            }
-          });
-    } else {
-      csvExporter.generateCsv(flatData);
-    }
+    this.printService.csvExport('Training Archive', flatData, 'training-archive');
   }
 
   /**
    * Prints filteredTrainings in table format as PDF
    */
   doPrint() {
-      const docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'landscape',
-        content: [
-          { text: 'Training Overview', fontSize: 20 },
-          {
-            table: {
-              headerRows: 6,
-              body: [
-                  ['ID', 'Group Name', 'Date', 'Student Name', 'Student Status'],
-                      ...this.getDataAsArray()
-              ]
-            }
-          }
-        ]
-      };
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      PDFMake.createPdf(docDefinition).getBlob((blob: Blob) => {
-      const path = this.file.externalRootDirectory + '/Download/';
-        this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
-            .then((status) => {
-              if (status.hasPermission) {
-                this.file.writeFile(path, `training-archive-${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}.pdf`,
-                    blob, {replace: true, append: false})
-                    .then((result) => {
-                          alert('PDF saved to: ' + path);
-                        },
-                        (error) => { alert(error.message); });
-              } else {
-                this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
-                    .then(() => {
-                      this.file.writeFile(path, `training-archive-${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}.pdf`,
-                          blob, {replace: true, append: false})
-                          .then((result) => {
-                                alert('PDF saved to: ' + path);
-                              },
-                              (error) => { alert(error.message); });
-                    });
-              }
-            });
-      });
-    } else {
-      PDFMake.createPdf(docDefinition).download();
-    }
-    this.printView = false;
+    const columns = ['ID', 'Group Name', 'Date', 'Student Name', 'Student Status'];
+    this.printService.pdfExport('Training Archive', columns, this.getDataAsArray());
   }
 
   /**
