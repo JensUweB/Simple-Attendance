@@ -4,6 +4,7 @@ import {AlertController} from '@ionic/angular';
 import {Helper} from '../../../../shared/classes/helper.class';
 import { Group, GroupService } from 'src/app/core/groups/services/group.service';
 import { Subscription } from 'rxjs';
+import {TrainingService} from '../../../training/services/training.service';
 
 @Component({
   selector: 'app-students-list',
@@ -20,6 +21,7 @@ export class StudentsListComponent implements OnInit, OnDestroy {
   constructor(
     private studentService: StudentService,
     private groupService: GroupService,
+    private trainingService: TrainingService,
     private alertCtrl: AlertController
   ) {
     this.students = this.studentService.getStudents();
@@ -95,5 +97,30 @@ export class StudentsListComponent implements OnInit, OnDestroy {
       }
     });
     return count;
+  }
+
+  /**
+   * Iterates through all training sessions and counts how often the given student
+   * had a given status compared to the total training sessions of the student.
+   * @param id the id of the student
+   * @param status the status number to search for
+   * @return training status count in percent
+   */
+  getStudentTrainingCountPercent(id: string, status: number): number {
+    const trainings = this.trainingService.getTrainings();
+    let totalCount = 0;
+    let count = 0;
+    trainings.forEach((training) => {
+      training.students.forEach((item) => {
+        if (item.student.id === id) {
+          totalCount ++;
+          if (item.status === status) {
+            count ++;
+          }
+        }
+      });
+    });
+    if (totalCount === 0) { return 0; }
+    return 100 / totalCount * count;
   }
 }
