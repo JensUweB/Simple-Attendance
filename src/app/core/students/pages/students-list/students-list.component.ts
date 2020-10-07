@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Student, StudentService} from '../../services/student.service';
-import {AlertController} from '@ionic/angular';
+import {ActionSheetController, AlertController} from '@ionic/angular';
 import {Helper} from '../../../../shared/classes/helper.class';
 import { Group, GroupService } from 'src/app/core/groups/services/group.service';
 import { Subscription } from 'rxjs';
 import {TrainingService} from '../../../training/services/training.service';
+import {PrintService} from '../../../../shared/services/print.service';
 
 @Component({
   selector: 'app-students-list',
@@ -22,7 +23,9 @@ export class StudentsListComponent implements OnInit, OnDestroy {
     private studentService: StudentService,
     private groupService: GroupService,
     private trainingService: TrainingService,
-    private alertCtrl: AlertController
+    private printService: PrintService,
+    private alertCtrl: AlertController,
+    private actionSheetCtrl: ActionSheetController,
   ) {
     this.students = this.studentService.getStudents();
     // sort students by name asc
@@ -106,7 +109,7 @@ export class StudentsListComponent implements OnInit, OnDestroy {
    * @param status the status number to search for
    * @return training status count in percent
    */
-  getStudentTrainingCountPercent(id: string, status: number): number {
+  getStudentTrainingCount(id: string, status: number, inPercent?): number {
     const trainings = this.trainingService.getTrainings();
     let totalCount = 0;
     let count = 0;
@@ -121,6 +124,79 @@ export class StudentsListComponent implements OnInit, OnDestroy {
       });
     });
     if (totalCount === 0) { return 0; }
-    return 100 / totalCount * count;
+    if (inPercent) { return 100 / totalCount * count; }
+    return count;
+  }
+
+  /**
+   * Returns the student array as flattened object array without any nested objects / arrays
+   */
+  flattenData() {
+    // Flatten the data to fit into a table
+    const flatData = [];
+    if (this.students.length > 0) {
+      this.students.forEach((student) => {
+          flatData.push(
+              {
+                ID: student.id,
+                Name: student.name,
+                GroupsNo: this.getStudentGroupsCount(student.id),
+                Attended: this.getStudentTrainingCount(student.id, 1),
+                NotCanceled:  this.getStudentTrainingCount(student.id, 0),
+                Canceled:  this.getStudentTrainingCount(student.id, -1),
+              }
+          );
+      });
+    }
+    return  flatData;
+  }
+
+  async toggleActionSheet() {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Actions',
+      buttons: [
+        {
+          text: 'Export as CSV',
+          icon: 'download',
+          handler: () => this.csvExport()
+        },
+        {
+          text: 'Print',
+          icon: 'print',
+          handler: () => this.doPrint()
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          icon: 'close'
+        }
+      ]
+    });
+    await actionSheet.present();
+  }
+
+  csvExport() {
+    this.printService.csvExport('Student List', this.flattenData(), 'student-list');
+  }
+
+  doPrint() {
+    const columns = ['ID', 'Name', 'GroupsNo', 'Attended', 'NotCanceled', 'Canceled'];
+    const data = this.getTableConformData();
+    this.printService.pdfExport('Training Archive', columns, data);
+  }
+
+  getTableConformData() {
+    const data = [];
+    this.students.forEach((student) => {
+      data.push([
+        student.id,
+        student.name,
+         this.getStudentGroupsCount(student.id),
+         this.getStudentTrainingCount(student.id, 1),
+         this.getStudentTrainingCount(student.id, 0),
+         this.getStudentTrainingCount(student.id, -1),
+      ]);
+    });
+    return data;
   }
 }

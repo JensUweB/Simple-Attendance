@@ -4,6 +4,11 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title><h1 id="title">Students</h1></ion-title>
+    <ion-buttons slot="end">
+      <ion-item color="translucent">
+        <ion-icon name="ellipsis-vertical-outline" (click)="toggleActionSheet()"></ion-icon>
+      </ion-item>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -30,9 +35,9 @@
               </ion-card-header>
               <ion-card-subtitle>
                 <ion-badge color="primary">{{getStudentGroupsCount(student.id)}}</ion-badge>
-                <ion-badge color="success">{{getStudentTrainingCountPercent(student.id, 1) | number:'1.0-2'}}%</ion-badge>
-                <ion-badge color="warning">{{getStudentTrainingCountPercent(student.id, 0) | number:'1.0-2'}}%</ion-badge>
-                <ion-badge color="danger">{{getStudentTrainingCountPercent(student.id, -1) | number:'1.0-2'}}%</ion-badge>
+                <ion-badge color="success">{{getStudentTrainingCount(student.id, 1, true) | number:'1.0-2'}}%</ion-badge>
+                <ion-badge color="warning">{{getStudentTrainingCount(student.id, 0, true) | number:'1.0-2'}}%</ion-badge>
+                <ion-badge color="danger">{{getStudentTrainingCount(student.id, -1, true) | number:'1.0-2'}}%</ion-badge>
               </ion-card-subtitle>
             </ion-card>
           </ion-list>
