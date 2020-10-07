@@ -30,9 +30,9 @@
               </ion-card-header>
               <ion-card-subtitle>
                 <ion-badge color="primary">{{getStudentGroupsCount(student.id)}}</ion-badge>
-                <ion-badge color="success">{{getStudentTrainingCountPercent(student.id, 1)}}%</ion-badge>
-                <ion-badge color="warning">{{getStudentTrainingCountPercent(student.id, 0)}}%</ion-badge>
-                <ion-badge color="danger">{{getStudentTrainingCountPercent(student.id, -1)}}%</ion-badge>
+                <ion-badge color="success">{{getStudentTrainingCountPercent(student.id, 1) | number:'1.0-2'}}%</ion-badge>
+                <ion-badge color="warning">{{getStudentTrainingCountPercent(student.id, 0) | number:'1.0-2'}}%</ion-badge>
+                <ion-badge color="danger">{{getStudentTrainingCountPercent(student.id, -1) | number:'1.0-2'}}%</ion-badge>
               </ion-card-subtitle>
             </ion-card>
           </ion-list>
