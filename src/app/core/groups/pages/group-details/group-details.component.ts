@@ -39,11 +39,18 @@ export class GroupDetailsComponent implements OnInit {
     ngOnInit() {
     }
 
+    /**
+     * Initializes the "add students select" options.
+     * Only students that are not part of the group can be selected
+     */
     initStudentsToAdd() {
         this.studentsToAdd = this.allStudents.filter((student) => !this.group.students.some((item) => item.id === student.id));
         this.selectedStudents = [];
     }
 
+    /**
+     * Adds the selected students to this group.
+     */
     onSelectionChange() {
         if (!this.selectedStudents || this.selectedStudents.length <= 0) {
             return;
@@ -53,11 +60,17 @@ export class GroupDetailsComponent implements OnInit {
         this.save();
     }
 
+    /**
+     * Saves the current state of this group
+     */
     save() {
         this.groupService.updateGroup(this.group);
         this.initStudentsToAdd();
     }
 
+    /**
+     * Opens an confirm modal and deletes this group, if action is confirmed.
+     */
     async removeGroup() {
         const alert = await this.alertCtrl.create({
             header: 'Confirm delete',
@@ -81,6 +94,9 @@ export class GroupDetailsComponent implements OnInit {
         await alert.present();
     }
 
+    /**
+     * Removes a student from this group and adds him to the "add students select"
+     */
     async removeStudent(student: Student) {
         this.group.students = this.group.students.filter((item) => item.id !== student.id);
         this.save();

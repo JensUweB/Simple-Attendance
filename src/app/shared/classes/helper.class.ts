@@ -1,6 +1,9 @@
 
 export class Helper {
 
+    /**
+     * Creates & returns an unique 20 characters long identifier
+     */
     public static uuid() {
         return 'xxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
             // tslint:disable-next-line:no-bitwise
