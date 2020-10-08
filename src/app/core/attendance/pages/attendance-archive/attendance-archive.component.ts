@@ -10,10 +10,10 @@ import {PrintService} from '../../../../shared/services/print.service';
 
 @Component({
     selector: 'app-training-archive',
-    templateUrl: './training-archive.component.html',
-    styleUrls: ['./training-archive.component.scss'],
+    templateUrl: './attendance-archive.component.html',
+    styleUrls: ['./attendance-archive.component.scss'],
 })
-export class TrainingArchiveComponent implements OnInit, OnDestroy {
+export class AttendanceArchiveComponent implements OnInit, OnDestroy {
     public printView = false;
     public trainings: Training[] = [];
     public filteredTrainings: Training[] = [];
@@ -127,7 +127,7 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
     csvExport() {
         // Flatten the data to fit into a table
         const flatData = this.flattenData();
-        this.printService.csvExport('Training Archive', flatData, 'training-archive');
+        this.printService.csvExport('Training Archive', flatData, 'attendance-archive');
     }
 
     /**
@@ -139,7 +139,7 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Returns the training array as flattened object array without any nested objects / arrays
+     * Returns the attendance array as flattened object array without any nested objects / arrays
      */
     flattenData() {
         // Flatten the data to fit into a table
@@ -206,7 +206,7 @@ export class TrainingArchiveComponent implements OnInit, OnDestroy {
             this.filteredTrainings = this.filteredTrainings.filter((training) => training.group.id === this.groupFilter);
         }
         /* if (this.minDateFilter) {
-          this.filteredTrainings = this.filteredTrainings.filter((training) => training.datetime.getTime() >= this.minDateFilter.getTime());
+          this.filteredTrainings = this.filteredTrainings.filter((attendance) => attendance.datetime.getTime() >= this.minDateFilter.getTime());
         } */
     }
 }

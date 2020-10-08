@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {GroupModule} from './groups/group.module';
 import {StudentsModule} from './students/students.module';
-import {TrainingModule} from './training/training.module';
+import {AttendanceModule} from './attendance/attendance.module';
 
 
 
@@ -13,7 +13,7 @@ import {TrainingModule} from './training/training.module';
       CommonModule,
       GroupModule,
       StudentsModule,
-      TrainingModule
+      AttendanceModule
   ],
   exports: [
 

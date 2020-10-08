@@ -4,7 +4,7 @@ import {ActionSheetController, AlertController} from '@ionic/angular';
 import {Helper} from '../../../../shared/classes/helper.class';
 import {Group, GroupService} from 'src/app/core/groups/services/group.service';
 import {Subscription} from 'rxjs';
-import {TrainingService} from '../../../training/services/training.service';
+import {TrainingService} from '../../../attendance/services/training.service';
 import {PrintService} from '../../../../shared/services/print.service';
 
 @Component({
@@ -118,8 +118,8 @@ export class StudentsListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Iterates through all training sessions and counts how often the given student
-     * had a given status compared to the total training sessions of the student.
+     * Iterates through all attendance sessions and counts how often the given student
+     * had a given status compared to the total attendance sessions of the student.
      * @param id the id of the student
      * @param status the status number to search for
      * @param inPercent should the return value be in percent, instead of an absolute value?

@@ -26,7 +26,7 @@ export class TrainingService {
   }
 
   /**
-   * Adds a new training object to the array
+   * Adds a new attendance object to the array
    * @param training the object to add
    */
   addTraining(training: Training) {
@@ -44,7 +44,7 @@ export class TrainingService {
   }
 
   /**
-   * Removes an existing training object from the array
+   * Removes an existing attendance object from the array
    * @param training the object to remove
    */
   removeTraining(training: Training) {
@@ -74,7 +74,7 @@ export class TrainingService {
     if (!this.trainings) {
       this.trainings = [];
     } else {
-      // Sort training entries by date
+      // Sort attendance entries by date
       this.trainings.sort((a, b) => {
         if (a.datetime > b.datetime) {
           return -1;

@@ -7,11 +7,11 @@ import {ToastController} from '@ionic/angular';
 
 
 @Component({
-    selector: 'app-new-training',
-    templateUrl: './new-training.component.html',
-    styleUrls: ['./new-training.component.scss'],
+    selector: 'app-new-attendance',
+    templateUrl: './new-attendance.component.html',
+    styleUrls: ['./new-attendance.component.scss'],
 })
-export class NewTrainingComponent implements OnInit, OnDestroy {
+export class NewAttendanceComponent implements OnInit, OnDestroy {
     public currentDate = new Date(Date.now());
     public selectedDate: Date;
     public selectedGroup: Group;
@@ -41,7 +41,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Creates a new training session with the selected group
+     * Creates a new attendance session with the selected group
      */
     startTraining() {
         const arr = [];
@@ -60,7 +60,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Saves the training object and shows an toast notification
+     * Saves the attendance object and shows an toast notification
      */
     async saveTraining() {
         this.trainingService.addTraining(this.training);
