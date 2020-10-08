@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Training, TrainingService} from '../../services/training.service';
 import {Helper} from '../../../../shared/classes/helper.class';
 import {Group, GroupService} from '../../../groups/services/group.service';
@@ -11,7 +11,7 @@ import {ToastController} from '@ionic/angular';
     templateUrl: './new-training.component.html',
     styleUrls: ['./new-training.component.scss'],
 })
-export class NewTrainingComponent implements OnInit {
+export class NewTrainingComponent implements OnInit, OnDestroy {
     public currentDate = new Date(Date.now());
     public selectedDate: Date;
     public selectedGroup: Group;
@@ -19,31 +19,30 @@ export class NewTrainingComponent implements OnInit {
     public groups: Group[];
     public training: Training;
 
-    private groupSub: Subscription;
+    private readonly groupSub: Subscription;
 
     constructor(
         private trainingService: TrainingService,
         private groupService: GroupService,
         private toastController: ToastController,
     ) {
+        this.groupSub = this.groupService.getGroups().subscribe((data) => {
+            this.groups = data;
+        });
     }
 
     ngOnInit() {
     }
 
-    ionViewDidEnter() {
-        this.groupSub = this.groupService.getGroups().subscribe((data) => {
-            this.groups = data;
-            console.log('New Training groups: ', data);
-        });
-    }
-
-    ionViewWillLeave() {
+    ngOnDestroy() {
         if (this.groupSub) {
             this.groupSub.unsubscribe();
         }
     }
 
+    /**
+     * Creates a new training session with the selected group
+     */
     startTraining() {
         const arr = [];
         this.selectedGroup.students.forEach(student => {
@@ -60,6 +59,9 @@ export class NewTrainingComponent implements OnInit {
         };
     }
 
+    /**
+     * Saves the training object and shows an toast notification
+     */
     async saveTraining() {
         this.trainingService.addTraining(this.training);
         const toast = await this.toastController.create({
@@ -72,17 +74,5 @@ export class NewTrainingComponent implements OnInit {
 
     groupSelectChange() {
         this.selectedGroup = this.groupService.getAllGroups().filter((item) => item.id === this.groupId)[0];
-    }
-
-    loadGroups() {
-        const data = localStorage.getItem('groups');
-        this.groups = [];
-        if (data) {
-            this.groups = JSON.parse(data);
-            this.groups.forEach((group) => {
-                group.createdAt = new Date(group.createdAt);
-                group.updatedAt = new Date(group.updatedAt);
-            });
-        }
     }
 }

@@ -15,8 +15,8 @@ export interface Group {
     providedIn: 'root'
 })
 export class GroupService {
-    public groups: Group[];
-    private groupsSubject: BehaviorSubject<Group[]>;
+    private groups: Group[];
+    private readonly groupsSubject: BehaviorSubject<Group[]>;
 
     constructor() {
         this.groupsSubject = new BehaviorSubject<Group[]>([]);
@@ -70,7 +70,7 @@ export class GroupService {
      */
     updateGroup(group: Group) {
         let found = false;
-        this.groups.forEach(g => {
+        this.groups.forEach((g) => {
             if (g.id === group.id) {
                 g = group;
                 g.updatedAt = new Date();
@@ -108,7 +108,6 @@ export class GroupService {
     save() {
         localStorage.setItem('groups', JSON.stringify(this.groups));
         this.groupsSubject.next(this.groups);
-        console.log('GroupService groups: ', this.groups);
     }
 
     /**

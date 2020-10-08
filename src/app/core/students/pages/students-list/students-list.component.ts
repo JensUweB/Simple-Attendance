@@ -44,6 +44,9 @@ export class StudentsListComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Creates a new student and adds it to the array
+     */
     addStudent() {
         if (this.studentInput.value) {
             const student: Student = {
@@ -59,6 +62,9 @@ export class StudentsListComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Sorts the student list ascending by name
+     */
     sort() {
         this.students.sort((a, b) => {
             if (a.name > b.name) {
@@ -71,6 +77,9 @@ export class StudentsListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Opens an confirm modal and deletes a student from the array and all groups, if action is confirmed
+     */
     async deleteStudent(student: Student) {
         const alert = await this.alertCtrl.create({
             header: 'Confirm delete',
@@ -91,9 +100,13 @@ export class StudentsListComponent implements OnInit, OnDestroy {
                 }
             ]
         });
-        await alert.present();
+        return alert.present();
     }
 
+    /**
+     * Returns the total number of groups the student is in
+     * @param id the Identifier of the student
+     */
     getStudentGroupsCount(id: string): number {
         let count = 0;
         this.groups.forEach((group) => {
@@ -109,7 +122,8 @@ export class StudentsListComponent implements OnInit, OnDestroy {
      * had a given status compared to the total training sessions of the student.
      * @param id the id of the student
      * @param status the status number to search for
-     * @return training status count in percent
+     * @param inPercent should the return value be in percent, instead of an absolute value?
+     * @return training status count (absolute or percent value)
      */
     getStudentTrainingCount(id: string, status: number, inPercent?): number {
         const trainings = this.trainingService.getTrainings();
@@ -135,7 +149,8 @@ export class StudentsListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Returns the student array as flattened object array without any nested objects / arrays
+     * Returns the student array as flattened object array and includes some statistic values
+     * that are not inside the student objects by default
      */
     flattenData() {
         // Flatten the data to fit into a table
@@ -157,6 +172,9 @@ export class StudentsListComponent implements OnInit, OnDestroy {
         return flatData;
     }
 
+    /**
+     * Opens an action sheet with some actions
+     */
     async toggleActionSheet() {
         const actionSheet = await this.actionSheetCtrl.create({
             header: 'Actions',
@@ -181,16 +199,26 @@ export class StudentsListComponent implements OnInit, OnDestroy {
         await actionSheet.present();
     }
 
+    /**
+     * Triggers printService.csvExport() for the student list
+     */
     csvExport() {
         this.printService.csvExport('Student List', this.flattenData(), 'student-list');
     }
 
+    /**
+     * Triggers printService.pdfExport() for the student list
+     */
     doPrint() {
         const columns = ['ID', 'Name', 'GroupsNo', 'Attended', 'NotCanceled', 'Canceled'];
         const data = this.getTableConformData();
         this.printService.pdfExport('Training Archive', columns, data);
     }
 
+    /**
+     * Returns the students list as two dimensional array, instead of an object array
+     * and includes some statistic values that are not inside the student objects by default
+     */
     getTableConformData() {
         const data = [];
         this.students.forEach((student) => {

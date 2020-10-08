@@ -30,19 +30,29 @@ export class GroupListComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Shows or hides the add group input
+     */
     toggleGroupInput() {
         this.showGroupInput = !this.showGroupInput;
     }
 
+    /**
+     * Creates a new group & adds it to the groups array
+     */
     createGroup() {
         this.toggleGroupInput();
         if (!this.groupName) {
             return;
         }
         const group = this.groupService.createGroup(this.groupName);
+        this.groups.push(group);
         this.groupName = null;
     }
 
+    /**
+     * removes an existing group
+     */
     removeGroup(group: Group) {
         this.groupService.removeGroup(group);
     }
