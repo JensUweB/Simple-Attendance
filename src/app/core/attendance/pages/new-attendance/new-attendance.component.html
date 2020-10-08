@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title><h1 id="title">New Attendance</h1></ion-title>
+    <ion-title><h1 id="title">{{'NewAttendance.Title' | translate}}</h1></ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,9 +12,9 @@
     <ion-grid>
       <ion-row *ngIf="!training">
         <ion-col size="12">
-          <p><strong class="capitalize">Record a new session!</strong></p>
+          <p><strong class="capitalize">{{'NewAttendance.InfoText' | translate}}</strong></p>
           <ion-item>
-            <ion-label>Set Date & Time</ion-label>
+            <ion-label>{{'NewAttendance.SetDateTime' | translate}}</ion-label>
             <ion-datetime
                     display-format="DD.MMM.YYYY HH:mm"
                     placeholder="01.Jan.2020 16:00"
@@ -23,12 +23,13 @@
             </ion-datetime>
           </ion-item>
           <ion-item>
-            <ion-label>Select Group</ion-label>
+            <ion-label>{{'NewAttendance.SelectGroup' | translate}}</ion-label>
             <ion-select (ionChange)="groupSelectChange()" [(ngModel)]="groupId">
               <ion-select-option *ngFor="let group of groups" [value]="group.id">{{group.name}}</ion-select-option>
             </ion-select>
           </ion-item>
-          <ion-button color="success" class="ion-float-right" [disabled]="!selectedDate || !selectedGroup" (click)="startTraining()">Start Training</ion-button>
+          <ion-button color="success" class="ion-float-right" [disabled]="!selectedDate || !selectedGroup" (click)="startTraining()">
+            {{'NewAttendance.StartBtn' | translate}}</ion-button>
         </ion-col>
       </ion-row>
       <ion-row *ngIf="training">
@@ -48,8 +49,8 @@
           </ion-list>
           <ion-row>
             <ion-col size="12">
-              <ion-button class="ion-float-right" color="success" (click)="saveTraining()">Save</ion-button>
-              <ion-button class="ion-float-right" color="warning" (click)="training = null">Cancel</ion-button>
+              <ion-button class="ion-float-right" color="success" (click)="saveTraining()">{{'Save' | translate}}</ion-button>
+              <ion-button class="ion-float-right" color="warning" (click)="training = null">{{'Cancel' | translate}}</ion-button>
             </ion-col>
           </ion-row>
         </ion-col>

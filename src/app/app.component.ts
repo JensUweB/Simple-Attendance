@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import {ActivatedRoute} from '@angular/router';
 import { GroupService } from './core/groups/services/group.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -16,22 +17,22 @@ export class AppComponent implements OnInit, AfterViewInit {
   public isDarkMode: boolean;
   public appPages = [
     {
-      title: 'Groups',
+      title: this.translate.instant('Nav.Groups'),
       url: '/groups',
       icon: 'people'
     },
     {
-      title: 'Students',
+      title: this.translate.instant('Nav.Students'),
       url: '/students',
       icon: 'person'
     },
     {
-      title: 'New Attendance',
+      title: this.translate.instant('Nav.NewAttendance'),
       url: '/attendance/new',
       icon: 'list'
     },
     {
-      title: 'Attendance Archive',
+      title: this.translate.instant('Nav.AttendanceArchive'),
       url: '/attendance/archive',
       icon: 'archive'
     },
@@ -39,13 +40,20 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     private platform: Platform,
+    private translate: TranslateService,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private animCtrl: AnimationController,
     private route: ActivatedRoute,
     private groupService: GroupService
   ) {
+    // Setup translation
+    translate.setDefaultLang('en');
+    translate.use('de');
+    translate.addLangs(['de']);
+
     this.initializeApp();
+
   }
 
   ngAfterViewInit() {

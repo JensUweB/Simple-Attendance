@@ -1,0 +1,18 @@
+{
+  "Save": "Speichern",
+  "Cancel": "Abbrechen",
+  "Nav": {
+    "Groups": "Gruppen",
+    "Students": "Teilnehmer",
+    "NewAttendance": "Neue Anwesenheit",
+    "AttendanceArchive": "Anwesenheitsarchiv"
+  },
+  "NewAttendance": {
+    "Title": "Neue Anwesenheit",
+    "InfoText": "Erfasse einen neuen Termin!",
+    "SetDateTime": "Wähle Datum & Uhrzeit",
+    "SelectGroup": "Wähle Gruppe",
+    "StartBtn": "Starte Training",
+    "SaveSuccess": "Anwesenheit wurde gespeichert."
+  }
+}

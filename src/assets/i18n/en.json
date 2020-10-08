@@ -1,0 +1,18 @@
+{
+  "Save": "Save",
+  "Cancel": "Cancel",
+  "Nav": {
+    "Groups": "Groups",
+    "Students": "Students",
+    "NewAttendance": "New Attendance",
+    "AttendanceArchive": "Attendance Archive"
+  },
+  "NewAttendance": {
+    "Title": "New Attendance",
+    "InfoText": "Record a new session!",
+    "SetDateTime": "Set Date & Time",
+    "SelectGroup": "Select Group",
+    "StartBtn": "Start Training",
+    "SaveSuccess": "Attendance has been saved."
+  }
+}

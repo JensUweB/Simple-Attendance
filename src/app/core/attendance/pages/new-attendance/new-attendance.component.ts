@@ -4,6 +4,7 @@ import {Helper} from '../../../../shared/classes/helper.class';
 import {Group, GroupService} from '../../../groups/services/group.service';
 import {Subscription} from 'rxjs';
 import {ToastController} from '@ionic/angular';
+import {TranslateService} from '@ngx-translate/core';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class NewAttendanceComponent implements OnInit, OnDestroy {
     private readonly groupSub: Subscription;
 
     constructor(
+        public translate: TranslateService,
         private trainingService: TrainingService,
         private groupService: GroupService,
         private toastController: ToastController,
@@ -65,7 +67,7 @@ export class NewAttendanceComponent implements OnInit, OnDestroy {
     async saveTraining() {
         this.trainingService.addTraining(this.training);
         const toast = await this.toastController.create({
-            message: 'Training session has been saved.',
+            message: this.translate.instant('NewAttendance.SaveSuccess'),
             duration: 4000,
             color: 'success'
         });

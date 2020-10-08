@@ -11,6 +11,7 @@ import { File } from '@ionic-native/file/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import {GroupModule} from '../groups/group.module';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import {GroupModule} from '../groups/group.module';
         IonicModule,
         FormsModule,
         GroupModule,
+        TranslateModule,
     ],
   exports: [
       NewAttendanceComponent,
