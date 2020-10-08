@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {GroupService} from '../../groups/services/group.service';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {Group, GroupService} from '../../groups/services/group.service';
 
 export interface Student {
     id: string;
@@ -45,7 +45,7 @@ export class StudentService {
     removeStudent(id: string) {
         this.students = this.students.filter(student => student.id !== id);
         this.save();
-        const groups = this.groupService.groups;
+        const groups = this.groupService.getAllGroups();
         groups.forEach((group) => {
             group.students = group.students.filter((student) => student.id !== id);
             this.groupService.updateGroup(group);
