@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { NewTrainingComponent } from './new-training.component';
+import { NewAttendanceComponent } from './new-attendance.component';
 
 describe('NewTrainingComponent', () => {
-  let component: NewTrainingComponent;
-  let fixture: ComponentFixture<NewTrainingComponent>;
+  let component: NewAttendanceComponent;
+  let fixture: ComponentFixture<NewAttendanceComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewTrainingComponent ],
+      declarations: [ NewAttendanceComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NewTrainingComponent);
+    fixture = TestBed.createComponent(NewAttendanceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

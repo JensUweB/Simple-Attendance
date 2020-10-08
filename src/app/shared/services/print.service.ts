@@ -49,7 +49,7 @@ export class PrintService {
                 PDFMake.createPdf(docDefinition).getBlob((blob: Blob) => {
                     const path = this.file.externalRootDirectory + '/Download/';
                     this.checkWritePermissions().then(() => {
-                        this.writeFile(blob, 'training-archive', '.pdf', 'PDF saved to: ' + path, path);
+                        this.writeFile(blob, 'attendance-archive', '.pdf', 'PDF saved to: ' + path, path);
                     });
                 });
             });

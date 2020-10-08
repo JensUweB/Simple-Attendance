@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title><h1 id="title">Training Archive</h1></ion-title>
+    <ion-title><h1 id="title">Attendance Archive</h1></ion-title>
     <ion-buttons slot="end">
       <ion-item color="translucent">
         <ion-icon name="ellipsis-vertical-outline" (click)="toggleActionSheet()"></ion-icon>
@@ -17,7 +17,7 @@
     <ion-grid *ngIf="!printView">
       <ion-row>
         <ion-col>
-          <p>This is a list of previous training sessions!</p>
+          <p>This is a list of previous sessions!</p>
             <ion-list *ngIf="trainings">
               <ion-item>
                 <ion-label>Group Filter</ion-label>

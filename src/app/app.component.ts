@@ -26,13 +26,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       icon: 'person'
     },
     {
-      title: 'New Training',
-      url: '/training/new',
+      title: 'New Attendance',
+      url: '/attendance/new',
       icon: 'list'
     },
     {
-      title: 'Training Archive',
-      url: '/training/archive',
+      title: 'Attendance Archive',
+      url: '/attendance/archive',
       icon: 'archive'
     },
   ];
