@@ -4,6 +4,7 @@ import {Helper} from '../../../../shared/classes/helper.class';
 import {Group, GroupService} from '../../../groups/services/group.service';
 import {Subscription} from 'rxjs';
 import {ToastController} from '@ionic/angular';
+import { plainToClass } from 'class-transformer';
 
 
 @Component({
@@ -27,6 +28,7 @@ export class NewAttendanceComponent implements OnInit, OnDestroy {
         private toastController: ToastController,
     ) {
         this.groupSub = this.groupService.getGroups().subscribe((data) => {
+            // Bug: This returns outdated data
             this.groups = data;
         });
     }

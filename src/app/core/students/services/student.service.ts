@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {Group, GroupService} from '../../groups/services/group.service';
+import { plainToClass } from 'class-transformer';
 
-export interface Student {
+export class Student {
     id: string;
     name: string;
     createdAt: Date;
@@ -64,7 +65,8 @@ export class StudentService {
      * Loads the students from local storage
      */
     load() {
-        this.students = JSON.parse(localStorage.getItem('students'));
+        const data: any[] = JSON.parse(localStorage.getItem('students'));
+        this.students = plainToClass(Student, data);
         if (!this.students) {
             this.students = [];
         } else {
