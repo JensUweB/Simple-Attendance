@@ -57,6 +57,7 @@ export class GroupDetailsComponent implements OnInit {
         }
         const canAdd = this.allStudents.filter(item => this.selectedStudents.some(id => id === item.id));
         this.group.students.push(...canAdd);
+        console.log('Updated group: ', this.group);
         this.save();
     }
 

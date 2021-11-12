@@ -2,8 +2,9 @@ import {Injectable} from '@angular/core';
 import {Student} from '../../students/services/student.service';
 import {Helper} from '../../../shared/classes/helper.class';
 import {BehaviorSubject, Observable} from 'rxjs';
+import { plainToClass } from 'class-transformer';
 
-export interface Group {
+export class Group {
     id: string;
     name: string;
     students: Student[];
@@ -108,16 +109,17 @@ export class GroupService {
     save() {
         localStorage.setItem('groups', JSON.stringify(this.groups));
         this.groupsSubject.next(this.groups);
+        console.log('GroupService groups: ', this.groups);
     }
 
     /**
      * Loads the data from local storage
      */
     load() {
-        const data = localStorage.getItem('groups');
+        const data: any[] = JSON.parse(localStorage.getItem('groups'));
         this.groups = [];
         if (data) {
-            this.groups = JSON.parse(data);
+            this.groups = plainToClass(Group, data);
             this.groups.forEach((group) => {
                 group.createdAt = new Date(group.createdAt);
                 group.updatedAt = new Date(group.updatedAt);
