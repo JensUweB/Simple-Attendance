@@ -1,10 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Training, TrainingService} from '../../services/training.service';
 import {Helper} from '../../../../shared/classes/helper.class';
-import {Group, GroupService} from '../../../groups/services/group.service';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {ToastController} from '@ionic/angular';
-import { plainToClass } from 'class-transformer';
+import { Group } from 'src/app/core/classes/group.class';
+import { Store } from '@ngrx/store';
+import { GroupsSelector } from 'src/app/store/selectors';
+import { Training } from 'src/app/core/classes/training.class';
+import { TrainingsActions } from 'src/app/store/actions';
 
 
 @Component({
@@ -17,29 +19,21 @@ export class NewAttendanceComponent implements OnInit, OnDestroy {
     public selectedDate: Date;
     public selectedGroup: Group;
     public groupId: string;
-    public groups: Group[];
+    public groups$: Observable<Group[]>;
     public training: Training;
 
-    private readonly groupSub: Subscription;
 
     constructor(
-        private trainingService: TrainingService,
-        private groupService: GroupService,
+        private readonly store: Store,
         private toastController: ToastController,
     ) {
-        this.groupSub = this.groupService.getGroups().subscribe((data) => {
-            // Bug: This returns outdated data
-            this.groups = data;
-        });
+        this.groups$ = this.store.select(GroupsSelector.groups);
     }
 
     ngOnInit() {
     }
 
     ngOnDestroy() {
-        if (this.groupSub) {
-            this.groupSub.unsubscribe();
-        }
     }
 
     /**
@@ -65,16 +59,19 @@ export class NewAttendanceComponent implements OnInit, OnDestroy {
      * Saves the attendance object and shows an toast notification
      */
     async saveTraining() {
-        this.trainingService.addTraining(this.training);
+        this.store.dispatch(TrainingsActions.addTraining({training: this.training}));
         const toast = await this.toastController.create({
             message: 'Training session has been saved.',
             duration: 4000,
             color: 'success'
         });
+        this.training = undefined;
+        this.selectedDate = undefined;
+        this.selectedGroup = undefined;
         await toast.present();
     }
 
-    groupSelectChange() {
-        this.selectedGroup = this.groupService.getAllGroups().filter((item) => item.id === this.groupId)[0];
+    async groupSelectChange() {
+        this.groups$.subscribe(groups => this.selectedGroup = groups.find((item) => item.id === this.groupId));
     }
 }

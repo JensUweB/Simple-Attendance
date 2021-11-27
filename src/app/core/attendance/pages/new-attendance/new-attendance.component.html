@@ -25,7 +25,7 @@
           <ion-item>
             <ion-label>Select Group</ion-label>
             <ion-select (ionChange)="groupSelectChange()" [(ngModel)]="groupId">
-              <ion-select-option *ngFor="let group of groups" [value]="group.id">{{group.name}}</ion-select-option>
+              <ion-select-option *ngFor="let group of (groups$ | async)" [value]="group.id">{{group.name}}</ion-select-option>
             </ion-select>
           </ion-item>
           <ion-button color="success" class="ion-float-right" [disabled]="!selectedDate || !selectedGroup" (click)="startTraining()">Start Training</ion-button>

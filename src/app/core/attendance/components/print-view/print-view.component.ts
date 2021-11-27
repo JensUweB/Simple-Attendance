@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Training} from '../../services/training.service';
 import {ExportToCsv} from 'export-to-csv';
+import { Training } from 'src/app/core/classes/training.class';
 
 @Component({
   selector: 'app-print-view',
