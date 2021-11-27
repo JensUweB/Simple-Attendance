@@ -11,6 +11,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
 import {enterAnimation} from './core/animations/nav-animation';
+import { StoreModule } from '@ngrx/store';
+import { metaReducers, reducers } from './store';
 
 
 @NgModule({
@@ -22,6 +24,7 @@ import {enterAnimation} from './core/animations/nav-animation';
       AppRoutingModule,
       CoreModule,
       HttpClientModule,
+      StoreModule.forRoot(reducers, {metaReducers}),
   ],
   providers: [
     StatusBar,

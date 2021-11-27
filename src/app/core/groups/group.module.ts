@@ -4,7 +4,6 @@ import {GroupRoutingModule} from './group-routing.module';
 import {GroupListComponent} from './pages/group-list/group-list.component';
 import {IonicModule} from '@ionic/angular';
 import {FormsModule} from '@angular/forms';
-import {GroupService} from './services/group.service';
 import {GroupDetailsComponent} from './pages/group-details/group-details.component';
 
 
@@ -25,7 +24,6 @@ import {GroupDetailsComponent} from './pages/group-details/group-details.compone
         GroupDetailsComponent
     ],
     providers: [
-        GroupService
     ]
 })
 export class GroupModule { }

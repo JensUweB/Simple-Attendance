@@ -26,8 +26,8 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-list *ngIf="groups && groups.length > 0">
-            <ion-item *ngFor="let group of groups" [routerLink]="'/groups/details/' + group.id">
+          <ion-list *ngIf="(groups$ | async) && (groups$ | async).length > 0">
+            <ion-item *ngFor="let group of (groups$ | async)" [routerLink]="'/groups/details/' + group.id">
               <ion-icon name="people-outline" slot="start"></ion-icon>
               <ion-label>
                 {{group.name}}

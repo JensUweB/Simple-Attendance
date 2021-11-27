@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Training, TrainingService} from '../../services/training.service';
 import {ActionSheetController, AlertController, Platform} from '@ionic/angular';
-import {File} from '@ionic-native/file/ngx';
-import {SocialSharing} from '@ionic-native/social-sharing/ngx';
-import {Group, GroupService} from 'src/app/core/groups/services/group.service';
 import {Subscription} from 'rxjs';
-import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
 import {PrintService} from '../../../../shared/services/print.service';
+import { Group } from 'src/app/core/classes/group.class';
+import { Training } from 'src/app/core/classes/training.class';
+import { Store } from '@ngrx/store';
+import { GroupsSelector, TrainingsSelector } from 'src/app/store/selectors';
+import { TrainingsActions } from 'src/app/store/actions';
 
 @Component({
     selector: 'app-training-archive',
@@ -25,20 +25,16 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
     private groupSub: Subscription;
 
     constructor(
-        private trainingService: TrainingService,
-        private groupService: GroupService,
+        private readonly store: Store,
         private alertCtrl: AlertController,
         private actionSheetCtrl: ActionSheetController,
-        private platform: Platform,
-        private file: File,
-        private socialSharing: SocialSharing,
-        private androidPermissions: AndroidPermissions,
         private printService: PrintService
     ) {
-
-        this.trainings = this.trainingService.getTrainings();
-        this.filteredTrainings = this.trainings;
-        this.groupSub = this.groupService.getGroups().subscribe((data) => {
+        this.store.select(TrainingsSelector.trainings).subscribe(trainings => {
+            this.trainings = trainings;
+            this.filteredTrainings = [...trainings];
+        });
+        this.store.select(GroupsSelector.groups).subscribe((data) => {
             this.groups = data;
         });
     }
@@ -77,7 +73,7 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
                     text: 'Confirm',
                     handler: () => {
                         this.trainings = this.trainings.filter(item => item.datetime !== training.datetime);
-                        this.trainingService.removeTraining(training);
+                        this.store.dispatch(TrainingsActions.removeTraining({training}));
                     }
                 }
             ]
@@ -206,7 +202,8 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
             this.filteredTrainings = this.filteredTrainings.filter((training) => training.group.id === this.groupFilter);
         }
         /* if (this.minDateFilter) {
-          this.filteredTrainings = this.filteredTrainings.filter((attendance) => attendance.datetime.getTime() >= this.minDateFilter.getTime());
+          this.filteredTrainings = this.filteredTrainings
+          .filter((attendance) => attendance.datetime.getTime() >= this.minDateFilter.getTime());
         } */
     }
 }

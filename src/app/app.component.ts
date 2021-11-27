@@ -3,8 +3,6 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AnimationController, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import {ActivatedRoute} from '@angular/router';
-import { GroupService } from './core/groups/services/group.service';
 
 @Component({
   selector: 'app-root',
@@ -42,8 +40,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private animCtrl: AnimationController,
-    private route: ActivatedRoute,
-    private groupService: GroupService
   ) {
     this.initializeApp();
   }

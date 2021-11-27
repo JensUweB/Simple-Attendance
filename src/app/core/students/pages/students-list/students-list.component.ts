@@ -1,11 +1,14 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Student, StudentService} from '../../services/student.service';
 import {ActionSheetController, AlertController} from '@ionic/angular';
 import {Helper} from '../../../../shared/classes/helper.class';
-import {Group, GroupService} from 'src/app/core/groups/services/group.service';
-import {Subscription} from 'rxjs';
-import {TrainingService} from '../../../attendance/services/training.service';
+import {Observable, Subscription} from 'rxjs';
 import {PrintService} from '../../../../shared/services/print.service';
+import { Store } from '@ngrx/store';
+import { GroupsSelector, StudentsSelector, TrainingsSelector } from 'src/app/store/selectors';
+import { GroupsActions, StudentsActions } from 'src/app/store/actions';
+import { Student } from 'src/app/core/classes/student.class';
+import { Group } from 'src/app/core/classes/group.class';
+import { Training } from 'src/app/core/classes/training.class';
 
 @Component({
     selector: 'app-students-list',
@@ -16,23 +19,19 @@ export class StudentsListComponent implements OnInit, OnDestroy {
     @ViewChild('nameInput') private studentInput;
     public students: Student[];
     public groups: Group[];
+    public trainings: Training[];
 
     private groupSub: Subscription;
 
     constructor(
-        private studentService: StudentService,
-        private groupService: GroupService,
-        private trainingService: TrainingService,
+        private readonly store: Store,
         private printService: PrintService,
         private alertCtrl: AlertController,
         private actionSheetCtrl: ActionSheetController,
     ) {
-        this.students = this.studentService.getStudents();
-        // sort students by name asc
-        this.sort();
-        this.groupSub = this.groupService.getGroups().subscribe((data) => {
-            this.groups = data;
-        });
+        this.store.select(StudentsSelector.students).subscribe(students => this.students = students);
+        this.store.select(GroupsSelector.groups).subscribe(groups => this.groups = groups);
+        this.store.select(TrainingsSelector.trainings).subscribe(trainings => this.trainings = trainings);
     }
 
     ngOnInit() {
@@ -55,26 +54,9 @@ export class StudentsListComponent implements OnInit, OnDestroy {
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
-            this.studentService.addStudent(student);
+            this.store.dispatch(StudentsActions.addStudent({student}));
             this.studentInput.value = null;
-            this.students = this.studentService.getStudents();
-            this.sort();
         }
-    }
-
-    /**
-     * Sorts the student list ascending by name
-     */
-    sort() {
-        this.students.sort((a, b) => {
-            if (a.name > b.name) {
-                return 1;
-            } else if (a.name === b.name) {
-                return 0;
-            } else {
-                return -1;
-            }
-        });
     }
 
     /**
@@ -94,8 +76,8 @@ export class StudentsListComponent implements OnInit, OnDestroy {
                 {
                     text: 'Confirm',
                     handler: () => {
-                        this.students = this.students.filter((item) => item.id !== student.id);
-                        this.studentService.removeStudent(student.id);
+                        this.store.dispatch(StudentsActions.removeStudent({student}));
+                        this.store.dispatch(GroupsActions.removeStudent({student}));
                     }
                 }
             ]
@@ -126,10 +108,9 @@ export class StudentsListComponent implements OnInit, OnDestroy {
      * @return training status count (absolute or percent value)
      */
     getStudentTrainingCount(id: string, status: number, inPercent?): number {
-        const trainings = this.trainingService.getTrainings();
         let totalCount = 0;
         let count = 0;
-        trainings.forEach((training) => {
+        this.trainings.forEach((training) => {
             training.students.forEach((item) => {
                 if (item.student.id === id) {
                     totalCount++;
@@ -152,22 +133,22 @@ export class StudentsListComponent implements OnInit, OnDestroy {
      * Returns the student array as flattened object array and includes some statistic values
      * that are not inside the student objects by default
      */
-    flattenData() {
+    async flattenData() {
         // Flatten the data to fit into a table
         const flatData = [];
         if (this.students.length > 0) {
-            this.students.forEach((student) => {
+            for (const student of this.students) {
                 flatData.push(
                     {
                         ID: student.id,
                         Name: student.name,
-                        GroupsNo: this.getStudentGroupsCount(student.id),
-                        Attended: this.getStudentTrainingCount(student.id, 1),
-                        NotCanceled: this.getStudentTrainingCount(student.id, 0),
-                        Canceled: this.getStudentTrainingCount(student.id, -1),
+                        GroupsNo: await this.getStudentGroupsCount(student.id),
+                        Attended: await this.getStudentTrainingCount(student.id, 1),
+                        NotCanceled: await this.getStudentTrainingCount(student.id, 0),
+                        Canceled: await this.getStudentTrainingCount(student.id, -1),
                     }
                 );
-            });
+            }
         }
         return flatData;
     }
@@ -202,16 +183,16 @@ export class StudentsListComponent implements OnInit, OnDestroy {
     /**
      * Triggers printService.csvExport() for the student list
      */
-    csvExport() {
-        this.printService.csvExport('Student List', this.flattenData(), 'student-list');
+    async csvExport() {
+        this.printService.csvExport('Student List', await this.flattenData(), 'student-list');
     }
 
     /**
      * Triggers printService.pdfExport() for the student list
      */
-    doPrint() {
+    async doPrint() {
         const columns = ['ID', 'Name', 'GroupsNo', 'Attended', 'NotCanceled', 'Canceled'];
-        const data = this.getTableConformData();
+        const data = await this.getTableConformData();
         this.printService.pdfExport('Training Archive', columns, data);
     }
 
@@ -219,7 +200,7 @@ export class StudentsListComponent implements OnInit, OnDestroy {
      * Returns the students list as two dimensional array, instead of an object array
      * and includes some statistic values that are not inside the student objects by default
      */
-    getTableConformData() {
+    async getTableConformData() {
         const data = [];
         this.students.forEach((student) => {
             data.push([

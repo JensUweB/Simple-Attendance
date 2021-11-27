@@ -1,7 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {Group, GroupService} from '../../services/group.service';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
+import { Store } from '@ngrx/store';
+import { GroupsSelector } from 'src/app/store/selectors';
+import { GroupsActions } from 'src/app/store/actions';
+import { Helper } from 'src/app/shared/classes/helper.class';
+import { Group } from 'src/app/core/classes/group.class';
 
 @Component({
     selector: 'app-group-list',
@@ -11,23 +15,19 @@ import {Subscription} from 'rxjs';
 export class GroupListComponent implements OnInit, OnDestroy {
     public showGroupInput = false;
     public groupName: string;
-    public groups: Group[];
+    public groups$: Observable<Group[]>;
 
-    private readonly groupSub: Subscription;
-
-    constructor(private groupService: GroupService, private modalController: ModalController) {
-        this.groupSub = this.groupService.getGroups().subscribe((data) => {
-            this.groups = data;
-        });
+    constructor(
+        private readonly store: Store,
+        private modalController: ModalController
+    ) {
+        this.groups$ = this.store.select(GroupsSelector.groups);
     }
 
     ngOnInit() {
     }
 
     ngOnDestroy() {
-        if (this.groupSub) {
-            this.groupSub.unsubscribe();
-        }
     }
 
     /**
@@ -45,8 +45,14 @@ export class GroupListComponent implements OnInit, OnDestroy {
         if (!this.groupName) {
             return;
         }
-        const group = this.groupService.createGroup(this.groupName);
-        this.groups.push(group);
+        const group: Group = {
+            id: Helper.uuid(),
+            name: this.groupName,
+            students: [],
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+        this.store.dispatch(GroupsActions.addGroup({group}));
         this.groupName = null;
     }
 
@@ -54,6 +60,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
      * removes an existing group
      */
     removeGroup(group: Group) {
-        this.groupService.removeGroup(group);
+        this.store.dispatch(GroupsActions.removeGroup({group}));
     }
 }
