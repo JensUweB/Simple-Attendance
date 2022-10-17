@@ -1,13 +1,20 @@
 {
-  "appId": "de.rootitsolutions.simpleattendance",
-  "appName": "Simple Attendance",
-  "bundledWebRuntime": false,
-  "npmClient": "npm",
-  "webDir": "www",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 0
-    }
-  },
-  "cordova": {}
+	"appId": "de.rootitsolutions.simpleattendance",
+	"appName": "Simple Attendance",
+	"webDir": "www",
+	"plugins": {
+		"SplashScreen": {
+			"launchAutoHide": false
+		},
+		"LocalNotifications": {
+			"smallIcon": "ic_stat_icon_config_sample",
+			"iconColor": "#CE0B7C"
+		},
+		"PushNotifications": {
+			"presentationOptions": [
+				"alert",
+				"sound"
+			]
+		}
+	}
 }
