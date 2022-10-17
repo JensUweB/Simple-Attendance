@@ -6,7 +6,10 @@
     <ion-title><h1 id="title">Attendance Archive</h1></ion-title>
     <ion-buttons slot="end">
       <ion-item color="translucent">
-        <ion-icon name="ellipsis-vertical-outline" (click)="toggleActionSheet()"></ion-icon>
+        <ion-icon
+          name="ellipsis-vertical-outline"
+          (click)="toggleActionSheet()"
+        ></ion-icon>
       </ion-item>
     </ion-buttons>
   </ion-toolbar>
@@ -18,46 +21,105 @@
       <ion-row>
         <ion-col>
           <p>This is a list of previous sessions!</p>
-            <ion-list *ngIf="trainings">
-              <ion-item>
-                <ion-label>Group Filter</ion-label>
-                <ion-select interface="popover" (ionChange)="setGroupFilter($event)">
-                  <ion-select-option value="" default>All Groups</ion-select-option>
-                  <ion-select-option *ngFor="let group of groups" [value]="group.id">{{group.name}}</ion-select-option>
-                </ion-select>
-              </ion-item>
-              <ion-card  *ngFor="let training of filteredTrainings" 
-                style="cursor: pointer;" 
-                [id]="'card-' + training.id" 
-                (click)="toggleList(training.id)"
+          <ion-list *ngIf="trainings">
+            <ion-item>
+              <ion-label>Group Filter</ion-label>
+              <ion-select
+                interface="popover"
+                (ionChange)="setGroupFilter($event)"
               >
-                <ion-card-header>
-                  <ion-card-title>{{training.group? training.group.name : 'No Group'}}
-                    <ion-icon name="trash" color="danger" size="default" style="float: right;" (click)="removeTraining(training)"></ion-icon>
-                  </ion-card-title>
-                  <ion-card-subtitle>{{training.datetime | date: "dd.MM.yyyy HH:mm"}}
-                    <ion-badge color="danger" class="badge">{{countStatus(training, -1)}}</ion-badge>
-                    <ion-badge color="warning" class="badge">{{countStatus(training, 0)}}</ion-badge>
-                    <ion-badge color="success" class="badge">{{countStatus(training, 1)}}</ion-badge>
-                  </ion-card-subtitle>
-                </ion-card-header>
-                <ion-card-content  [id]="'content-' + training.id" class="ion-hide">
-                  <ion-list>
-                    <ion-item *ngFor="let item of training.students">
-                      <ion-label>
-                        <ion-icon name="person" style="margin-right: 5px;"></ion-icon>{{item.student.name}}</ion-label>
-                      <ion-icon *ngIf="item.status === 1" name="checkmark-circle" color="success" size="large" slot="end" class="ion-float-right"></ion-icon>
-                      <ion-icon *ngIf="item.status === 0" name="help-circle" color="warning" size="large" slot="end" class="ion-float-right"></ion-icon>
-                      <ion-icon *ngIf="item.status === -1" name="close-circle" color="danger" size="large" slot="end" class="ion-float-right"></ion-icon>
-                    </ion-item>
-                  </ion-list>
-                </ion-card-content>
-              </ion-card>
-            </ion-list>
+                <ion-select-option value="" default
+                  >All Groups</ion-select-option
+                >
+                <ion-select-option
+                  *ngFor="let group of groups"
+                  [value]="group.id"
+                  >{{ group.name }}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
+            <ion-card
+              *ngFor="let training of filteredTrainings"
+              style="cursor: pointer"
+              [id]="'card-' + training.id"
+              (click)="toggleList(training.id)"
+            >
+              <ion-card-header>
+                <ion-card-title
+                  >{{ training.group ? training.group.name : "No Group" }}
+                  <div style="display: flex; gap: 0.75rem; float: right">
+                    <ion-icon
+                      name="trash"
+                      color="danger"
+                      size="default"
+                      (click)="removeTraining(training)"
+                    ></ion-icon>
+                    <ion-icon
+                      name="pencil"
+                      color="warning"
+                      size="default"
+                      (click)="editTraining(training)"
+                    ></ion-icon>
+                  </div>
+                </ion-card-title>
+                <ion-card-subtitle
+                  >{{ training.datetime | date: "dd.MM.yyyy HH:mm" }}
+                  <ion-badge color="danger" class="badge">{{
+                    countStatus(training, -1)
+                  }}</ion-badge>
+                  <ion-badge color="warning" class="badge">{{
+                    countStatus(training, 0)
+                  }}</ion-badge>
+                  <ion-badge color="success" class="badge">{{
+                    countStatus(training, 1)
+                  }}</ion-badge>
+                </ion-card-subtitle>
+              </ion-card-header>
+              <ion-card-content
+                [id]="'content-' + training.id"
+                class="ion-hide"
+              >
+                <ion-list>
+                  <ion-item *ngFor="let item of training.students">
+                    <ion-label>
+                      <ion-icon
+                        name="person"
+                        style="margin-right: 5px"
+                      ></ion-icon
+                      >{{ item.student.name }}</ion-label
+                    >
+                    <ion-icon
+                      *ngIf="item.status === 1"
+                      name="checkmark-circle"
+                      color="success"
+                      size="large"
+                      slot="end"
+                      class="ion-float-right"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngIf="item.status === 0"
+                      name="help-circle"
+                      color="warning"
+                      size="large"
+                      slot="end"
+                      class="ion-float-right"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngIf="item.status === -1"
+                      name="close-circle"
+                      color="danger"
+                      size="large"
+                      slot="end"
+                      class="ion-float-right"
+                    ></ion-icon>
+                  </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+          </ion-list>
         </ion-col>
       </ion-row>
     </ion-grid>
     <app-print-view *ngIf="printView" [trainings]="trainings"></app-print-view>
   </div>
 </ion-content>
-

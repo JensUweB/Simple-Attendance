@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Backup</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>Exports</ion-list-header>
+    <ion-item>
+      <div>
+        <ion-label class="ion-text-wrap">
+          Export all groups including the added students
+        </ion-label>
+        <ion-button (click)="exportGroups()"
+          >Export groups incl. students
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-list-header>Imports</ion-list-header>
+    <ion-item>
+      <div>
+        <ion-label class="ion-text-wrap">
+          Import groups and related students from a json file
+        </ion-label>
+        <input #inputGroups type="file" (change)="importGroups(inputGroups)" />
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>

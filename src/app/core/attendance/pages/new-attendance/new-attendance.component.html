@@ -16,40 +16,87 @@
           <ion-item>
             <ion-label>Set Date & Time</ion-label>
             <ion-datetime
-                    display-format="DD.MMM.YYYY HH:mm"
-                    placeholder="01.Jan.2020 16:00"
-                    [value]="currentDate.toDateString()"
-                    [(ngModel)]="selectedDate">
+              [value]="currentDate.toDateString()"
+              [(ngModel)]="selectedDate"
+            >
             </ion-datetime>
           </ion-item>
           <ion-item>
             <ion-label>Select Group</ion-label>
             <ion-select (ionChange)="groupSelectChange()" [(ngModel)]="groupId">
-              <ion-select-option *ngFor="let group of (groups$ | async)" [value]="group.id">{{group.name}}</ion-select-option>
+              <ion-select-option
+                *ngFor="let group of groups$ | async"
+                [value]="group.id"
+                >{{ group.name }}</ion-select-option
+              >
             </ion-select>
           </ion-item>
-          <ion-button color="success" class="ion-float-right" [disabled]="!selectedDate || !selectedGroup" (click)="startTraining()">Start Training</ion-button>
+          <ion-button
+            color="success"
+            class="ion-float-right"
+            [disabled]="!selectedDate || !selectedGroup"
+            (click)="startTraining()"
+            >Start Training</ion-button
+          >
         </ion-col>
       </ion-row>
       <ion-row *ngIf="training">
         <ion-col>
-          <p><strong class="capitalize">{{training.group.name}}, {{selectedDate | date: "dd.MMM.yyyy HH:mm"}}</strong></p>
+          <p>
+            <strong class="capitalize"
+              >{{ training.group.name }},
+              {{ selectedDate | date: "dd.MMM.yyyy HH:mm" }}</strong
+            >
+          </p>
           <ion-list *ngFor="let item of training.students">
             <ion-item>
-              <ion-icon name="person" style="margin-right: 10px;"></ion-icon>
-              <ion-label>{{item.student.name}}</ion-label>
-              <ion-icon [name]="item.status === 1 ? 'checkmark-circle' : 'checkmark-circle-outline'" color="success" size="large" class="icon-btn ion-float-right"
-                        (click)="item.status = 1"></ion-icon>
-              <ion-icon [name]="item.status === 0 ? 'help-circle' : 'help-circle-outline'" color="warning" size="large" class="icon-btn ion-float-right"
-                        (click)="item.status = 0"></ion-icon>
-              <ion-icon [name]="item.status === -1 ? 'close-circle' : 'close-circle-outline'" color="danger" size="large" class="icon-btn ion-float-right"
-                        (click)="item.status = -1"></ion-icon>
-          </ion-item>
+              <ion-icon name="person" style="margin-right: 10px"></ion-icon>
+              <ion-label>{{ item.student.name }}</ion-label>
+              <ion-icon
+                [name]="
+                  item.status === 1
+                    ? 'checkmark-circle'
+                    : 'checkmark-circle-outline'
+                "
+                color="success"
+                size="large"
+                class="icon-btn ion-float-right"
+                (click)="item.status = 1"
+              ></ion-icon>
+              <ion-icon
+                [name]="
+                  item.status === 0 ? 'help-circle' : 'help-circle-outline'
+                "
+                color="warning"
+                size="large"
+                class="icon-btn ion-float-right"
+                (click)="item.status = 0"
+              ></ion-icon>
+              <ion-icon
+                [name]="
+                  item.status === -1 ? 'close-circle' : 'close-circle-outline'
+                "
+                color="danger"
+                size="large"
+                class="icon-btn ion-float-right"
+                (click)="item.status = -1"
+              ></ion-icon>
+            </ion-item>
           </ion-list>
           <ion-row>
             <ion-col size="12">
-              <ion-button class="ion-float-right" color="success" (click)="saveTraining()">Save</ion-button>
-              <ion-button class="ion-float-right" color="warning" (click)="training = null">Cancel</ion-button>
+              <ion-button
+                class="ion-float-right"
+                color="success"
+                (click)="saveTraining()"
+                >Save</ion-button
+              >
+              <ion-button
+                class="ion-float-right"
+                color="warning"
+                (click)="training = null"
+                >Cancel</ion-button
+              >
             </ion-col>
           </ion-row>
         </ion-col>

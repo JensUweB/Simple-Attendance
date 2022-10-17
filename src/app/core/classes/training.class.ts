@@ -1,3 +1,4 @@
+import { Group } from './group.class';
 import { Student } from './student.class';
 
 export class Training {
@@ -6,10 +7,7 @@ export class Training {
       student: Student,
       status: number
     }[] = undefined;
-    group: {
-      id: string,
-      name: string
-    } = undefined;
+    group: Group = undefined;
     datetime: Date = undefined;
 
     constructor(input?: any) {

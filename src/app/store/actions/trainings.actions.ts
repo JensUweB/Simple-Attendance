@@ -10,3 +10,8 @@ export const removeTraining = createAction(
     '[Trainings] Remove Training',
     props<{ training: Training }>()
 );
+
+export const selectTraining = createAction(
+  "[Trainings] Select Training",
+  props<{ training: Training }>()
+);
