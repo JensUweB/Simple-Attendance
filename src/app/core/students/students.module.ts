@@ -1,29 +1,24 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
-import { StudentsRoutingModule } from './students-routing.module';
-import {StudentsListComponent} from './pages/students-list/students-list.component';
-import {IonicModule} from '@ionic/angular';
-import {SharedModule} from '../../shared/shared.module';
-
+import { StudentsRoutingModule } from "./students-routing.module";
+import { StudentsListComponent } from "./pages/students-list/students-list.component";
+import { IonicModule } from "@ionic/angular";
+import { SharedModule } from "../../shared/shared.module";
 
 @NgModule({
-  declarations: [
-      StudentsListComponent
-  ],
+  declarations: [StudentsListComponent],
   imports: [
-      // Core
-      CommonModule,
-      IonicModule,
-      SharedModule,
+    // Core
+    CommonModule,
+    IonicModule,
+    SharedModule,
 
-      // Intern
-      StudentsRoutingModule,
+    // Intern
+    StudentsRoutingModule,
 
-      // Extern
+    // Extern
   ],
-  exports: [
-      StudentsListComponent
-  ]
+  exports: [StudentsListComponent],
 })
-export class StudentsModule { }
+export class StudentsModule {}

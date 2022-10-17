@@ -1,34 +1,40 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ExportToCsv} from 'export-to-csv';
-import { Training } from 'src/app/core/classes/training.class';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { Training } from "src/app/core/classes/training.class";
 
 @Component({
-  selector: 'app-print-view',
-  templateUrl: './print-view.component.html',
-  styleUrls: ['./print-view.component.scss'],
+  selector: "app-print-view",
+  templateUrl: "./print-view.component.html",
+  styleUrls: ["./print-view.component.scss"],
 })
 export class PrintViewComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() trainings: Training[];
-  @ViewChild('#printArea') printArea;
+  @ViewChild("#printArea") printArea;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
-    document.body.setAttribute('color-theme', 'light');
+    document.body.setAttribute("color-theme", "light");
   }
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   ngOnDestroy() {
-    document.body.setAttribute('color-theme', localStorage.getItem('theme'));
+    document.body.setAttribute("color-theme", localStorage.getItem("theme"));
   }
 
   countStatus(training: Training, status: number) {
     let count = 0;
     training.students.forEach((student) => {
-      if (student.status === status) { count ++; }
+      if (student.status === status) {
+        count++;
+      }
     });
     return count;
   }
@@ -38,18 +44,16 @@ export class PrintViewComponent implements OnInit, OnDestroy, AfterViewInit {
     const flatData = [];
     this.trainings.forEach((training) => {
       training.students.forEach((item) => {
-        flatData.push(
-            {
-              ID: training.id,
-              GroupName: training.group.name,
-              Date: training.datetime,
-              StudentId: item.student.id,
-              StudentName: item.student.name,
-              StudentStatus: item.status
-            }
-        );
+        flatData.push({
+          ID: training.id,
+          GroupName: training.group.name,
+          Date: training.datetime,
+          StudentId: item.student.id,
+          StudentName: item.student.name,
+          StudentStatus: item.status,
+        });
       });
     });
-    return  flatData;
+    return flatData;
   }
 }
