@@ -9,12 +9,7 @@ import { BackupPageRoutingModule } from './backup-routing.module';
 import { BackupPage } from './backup.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    BackupPageRoutingModule
-  ],
-  declarations: [BackupPage]
+  imports: [CommonModule, FormsModule, IonicModule, BackupPageRoutingModule],
+  declarations: [BackupPage],
 })
 export class BackupPageModule {}

@@ -1,26 +1,23 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ModalController } from "@ionic/angular";
-import { Observable } from "rxjs";
-import { Store } from "@ngrx/store";
-import { GroupsSelector } from "src/app/store/selectors";
-import { GroupsActions } from "src/app/store/actions";
-import { Helper } from "src/app/shared/classes/helper.class";
-import { Group } from "src/app/core/classes/group.class";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { GroupsSelector } from 'src/app/store/selectors';
+import { GroupsActions } from 'src/app/store/actions';
+import { Helper } from 'src/app/shared/classes/helper.class';
+import { Group } from 'src/app/core/classes/group.class';
 
 @Component({
-  selector: "app-group-list",
-  templateUrl: "./group-list.component.html",
-  styleUrls: ["./group-list.component.scss"],
+  selector: 'app-group-list',
+  templateUrl: './group-list.component.html',
+  styleUrls: ['./group-list.component.scss'],
 })
 export class GroupListComponent implements OnInit, OnDestroy {
   public showGroupInput = false;
   public groupName: string;
   public groups$: Observable<Group[]>;
 
-  constructor(
-    private readonly store: Store,
-    private modalController: ModalController
-  ) {
+  constructor(private readonly store: Store, private modalController: ModalController) {
     this.groups$ = this.store.select(GroupsSelector.groups);
   }
 

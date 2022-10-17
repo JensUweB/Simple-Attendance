@@ -1,16 +1,16 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { AlertController } from "@ionic/angular";
-import { Store } from "@ngrx/store";
-import { GroupsSelector, StudentsSelector } from "src/app/store/selectors";
-import { Student } from "src/app/core/classes/student.class";
-import { Group } from "src/app/core/classes/group.class";
-import { GroupsActions } from "src/app/store/actions";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { Store } from '@ngrx/store';
+import { GroupsSelector, StudentsSelector } from 'src/app/store/selectors';
+import { Student } from 'src/app/core/classes/student.class';
+import { Group } from 'src/app/core/classes/group.class';
+import { GroupsActions } from 'src/app/store/actions';
 
 @Component({
-  selector: "app-group-details",
-  templateUrl: "./group-details.component.html",
-  styleUrls: ["./group-details.component.scss"],
+  selector: 'app-group-details',
+  templateUrl: './group-details.component.html',
+  styleUrls: ['./group-details.component.scss'],
 })
 export class GroupDetailsComponent implements OnInit {
   public group: Group;
@@ -24,7 +24,7 @@ export class GroupDetailsComponent implements OnInit {
     private readonly store: Store,
     private alertCtrl: AlertController
   ) {
-    const id = this.route.snapshot.paramMap.get("id");
+    const id = this.route.snapshot.paramMap.get('id');
     this.store.select(GroupsSelector.groups).subscribe((groups) => {
       this.group = groups.find((g) => g.id === id);
     });
@@ -34,9 +34,7 @@ export class GroupDetailsComponent implements OnInit {
     });
 
     this.selectedStudents = [];
-    this.group.students.forEach((student) =>
-      this.selectedStudents.push(student.id)
-    );
+    this.group.students.forEach((student) => this.selectedStudents.push(student.id));
   }
 
   ngOnInit() {}
@@ -59,12 +57,8 @@ export class GroupDetailsComponent implements OnInit {
     if (!this.selectedStudents || this.selectedStudents.length <= 0) {
       return;
     }
-    const students = this.allStudents.filter((item) =>
-      this.selectedStudents.some((id) => id === item.id)
-    );
-    this.store.dispatch(
-      GroupsActions.addStudents({ group: this.group, students })
-    );
+    const students = this.allStudents.filter((item) => this.selectedStudents.some((id) => id === item.id));
+    this.store.dispatch(GroupsActions.addStudents({ group: this.group, students }));
   }
 
   /**
@@ -72,22 +66,19 @@ export class GroupDetailsComponent implements OnInit {
    */
   async removeGroup() {
     const alert = await this.alertCtrl.create({
-      header: "Confirm delete",
-      message:
-        "Do you really want to delete this group? The archive is not affected by this.",
+      header: 'Confirm delete',
+      message: 'Do you really want to delete this group? The archive is not affected by this.',
       buttons: [
         {
-          text: "Cancel",
-          role: "cancel",
+          text: 'Cancel',
+          role: 'cancel',
           handler: () => {},
         },
         {
-          text: "Confirm",
+          text: 'Confirm',
           handler: () => {
-            this.store.dispatch(
-              GroupsActions.removeGroup({ group: this.group })
-            );
-            this.router.navigateByUrl("/groups");
+            this.store.dispatch(GroupsActions.removeGroup({ group: this.group }));
+            this.router.navigateByUrl('/groups');
           },
         },
       ],
@@ -99,8 +90,6 @@ export class GroupDetailsComponent implements OnInit {
    * Removes a student from this group and adds him to the "add students select"
    */
   async removeStudent(student: Student) {
-    this.store.dispatch(
-      GroupsActions.addStudent({ group: this.group, student })
-    );
+    this.store.dispatch(GroupsActions.addStudent({ group: this.group, student }));
   }
 }

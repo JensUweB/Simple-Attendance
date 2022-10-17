@@ -1,6 +1,6 @@
-import { createReducer, on } from "@ngrx/store";
-import { Group } from "src/app/core/classes/group.class";
-import { GroupsActions } from "../actions";
+import { createReducer, on } from '@ngrx/store';
+import { Group } from 'src/app/core/classes/group.class';
+import { GroupsActions } from '../actions';
 
 export interface GroupsState {
   groups: Group[];
@@ -19,10 +19,7 @@ export const groupsReducer = createReducer(
   })),
   on(GroupsActions.addGroups, (state, { groups }) => ({
     ...state,
-    groups: [
-      ...state.groups.filter((grp) => !groups.some((g) => grp.id === g.id)),
-      ...groups,
-    ],
+    groups: [...state.groups.filter((grp) => !groups.some((g) => grp.id === g.id)), ...groups],
   })),
   on(GroupsActions.removeGroup, (state, { group }) => ({
     ...state,

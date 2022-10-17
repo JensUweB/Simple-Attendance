@@ -6,8 +6,8 @@ import { BackupPage } from './backup.page';
 const routes: Routes = [
   {
     path: '',
-    component: BackupPage
-  }
+    component: BackupPage,
+  },
 ];
 
 @NgModule({

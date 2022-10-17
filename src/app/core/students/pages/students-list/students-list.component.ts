@@ -1,26 +1,22 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { ActionSheetController, AlertController } from "@ionic/angular";
-import { Helper } from "../../../../shared/classes/helper.class";
-import { Subscription } from "rxjs";
-import { PrintService } from "../../../../shared/services/print.service";
-import { Store } from "@ngrx/store";
-import {
-  GroupsSelector,
-  StudentsSelector,
-  TrainingsSelector,
-} from "src/app/store/selectors";
-import { GroupsActions, StudentsActions } from "src/app/store/actions";
-import { Student } from "src/app/core/classes/student.class";
-import { Group } from "src/app/core/classes/group.class";
-import { Training } from "src/app/core/classes/training.class";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActionSheetController, AlertController } from '@ionic/angular';
+import { Helper } from '../../../../shared/classes/helper.class';
+import { Subscription } from 'rxjs';
+import { PrintService } from '../../../../shared/services/print.service';
+import { Store } from '@ngrx/store';
+import { GroupsSelector, StudentsSelector, TrainingsSelector } from 'src/app/store/selectors';
+import { GroupsActions, StudentsActions } from 'src/app/store/actions';
+import { Student } from 'src/app/core/classes/student.class';
+import { Group } from 'src/app/core/classes/group.class';
+import { Training } from 'src/app/core/classes/training.class';
 
 @Component({
-  selector: "app-students-list",
-  templateUrl: "./students-list.component.html",
-  styleUrls: ["./students-list.component.scss"],
+  selector: 'app-students-list',
+  templateUrl: './students-list.component.html',
+  styleUrls: ['./students-list.component.scss'],
 })
 export class StudentsListComponent implements OnInit, OnDestroy {
-  @ViewChild("nameInput") private studentInput;
+  @ViewChild('nameInput') private studentInput;
   public students: Student[];
   public groups: Group[];
   public trainings: Training[];
@@ -33,15 +29,9 @@ export class StudentsListComponent implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private actionSheetCtrl: ActionSheetController
   ) {
-    this.store
-      .select(StudentsSelector.students)
-      .subscribe((students) => (this.students = students));
-    this.store
-      .select(GroupsSelector.groups)
-      .subscribe((groups) => (this.groups = groups));
-    this.store
-      .select(TrainingsSelector.trainings)
-      .subscribe((trainings) => (this.trainings = trainings));
+    this.store.select(StudentsSelector.students).subscribe((students) => (this.students = students));
+    this.store.select(GroupsSelector.groups).subscribe((groups) => (this.groups = groups));
+    this.store.select(TrainingsSelector.trainings).subscribe((trainings) => (this.trainings = trainings));
   }
 
   ngOnInit() {}
@@ -73,19 +63,19 @@ export class StudentsListComponent implements OnInit, OnDestroy {
    */
   async deleteStudent(student: Student) {
     const alert = await this.alertCtrl.create({
-      header: "Confirm delete",
+      header: 'Confirm delete',
       message:
-        "Do you really want to remove " +
+        'Do you really want to remove ' +
         student.name +
-        "? This student will also get removed from all existing groups! This cannot be undone.",
+        '? This student will also get removed from all existing groups! This cannot be undone.',
       buttons: [
         {
-          text: "Cancel",
-          role: "cancel",
+          text: 'Cancel',
+          role: 'cancel',
           handler: () => {},
         },
         {
-          text: "Confirm",
+          text: 'Confirm',
           handler: () => {
             this.store.dispatch(StudentsActions.removeStudent({ student }));
             this.store.dispatch(GroupsActions.removeStudent({ student }));
@@ -167,22 +157,22 @@ export class StudentsListComponent implements OnInit, OnDestroy {
    */
   async toggleActionSheet() {
     const actionSheet = await this.actionSheetCtrl.create({
-      header: "Actions",
+      header: 'Actions',
       buttons: [
         {
-          text: "Export as CSV",
-          icon: "download",
+          text: 'Export as CSV',
+          icon: 'download',
           handler: () => this.csvExport(),
         },
         {
-          text: "Print",
-          icon: "print",
+          text: 'Print',
+          icon: 'print',
           handler: () => this.doPrint(),
         },
         {
-          text: "Cancel",
-          role: "cancel",
-          icon: "close",
+          text: 'Cancel',
+          role: 'cancel',
+          icon: 'close',
         },
       ],
     });
@@ -193,27 +183,16 @@ export class StudentsListComponent implements OnInit, OnDestroy {
    * Triggers printService.csvExport() for the student list
    */
   async csvExport() {
-    this.printService.csvExport(
-      "Student List",
-      await this.flattenData(),
-      "student-list"
-    );
+    this.printService.csvExport('Student List', await this.flattenData(), 'student-list');
   }
 
   /**
    * Triggers printService.pdfExport() for the student list
    */
   async doPrint() {
-    const columns = [
-      "ID",
-      "Name",
-      "GroupsNo",
-      "Attended",
-      "NotCanceled",
-      "Canceled",
-    ];
+    const columns = ['ID', 'Name', 'GroupsNo', 'Attended', 'NotCanceled', 'Canceled'];
     const data = await this.getTableConformData();
-    this.printService.pdfExport("Training Archive", columns, data);
+    this.printService.pdfExport('Training Archive', columns, data);
   }
 
   /**

@@ -1,22 +1,18 @@
-import { Injectable } from "@angular/core";
-import { ExportToCsv } from "export-to-csv";
-import { AndroidPermissions } from "@ionic-native/android-permissions/ngx";
-import { File } from "@ionic-native/file/ngx";
-import { Platform } from "@ionic/angular";
-import * as PDFMake from "pdfmake/build/pdfmake.js";
-import * as pdfFonts from "pdfmake/build/vfs_fonts.js";
+import { Injectable } from '@angular/core';
+import { ExportToCsv } from 'export-to-csv';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { Platform } from '@ionic/angular';
+import * as PDFMake from 'pdfmake/build/pdfmake.js';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class PrintService {
   public now = new Date();
 
-  constructor(
-    private androidPermissions: AndroidPermissions,
-    private file: File,
-    private platform: Platform
-  ) {
+  constructor(private androidPermissions: AndroidPermissions, private file: File, private platform: Platform) {
     // Bugfix for PDFMake
     (window as any).pdfMake.vfs = pdfFonts.pdfMake.vfs;
   }
@@ -29,8 +25,8 @@ export class PrintService {
    */
   pdfExport(title: string, columnTitles: string[], data: any[][]) {
     const docDefinition = {
-      pageSize: "A4",
-      pageOrientation: "landscape",
+      pageSize: 'A4',
+      pageOrientation: 'landscape',
       content: [
         { text: title, fontSize: 20 },
         {
@@ -41,18 +37,12 @@ export class PrintService {
         },
       ],
     };
-    if (this.platform.is("android")) {
+    if (this.platform.is('android')) {
       this.checkWritePermissions().then(() => {
         PDFMake.createPdf(docDefinition).getBlob((blob: Blob) => {
-          const path = this.file.externalRootDirectory + "/Download/";
+          const path = this.file.externalRootDirectory + '/Download/';
           this.checkWritePermissions().then(() => {
-            this.writeFile(
-              blob,
-              "attendance-archive",
-              ".pdf",
-              "PDF saved to: " + path,
-              path
-            );
+            this.writeFile(blob, 'attendance-archive', '.pdf', 'PDF saved to: ' + path, path);
           });
         });
       });
@@ -69,9 +59,9 @@ export class PrintService {
    */
   csvExport(title: string, data: any[], filename: string) {
     const options = {
-      fieldSeparator: ",",
+      fieldSeparator: ',',
       quoteStrings: '"',
-      decimalSeparator: ".",
+      decimalSeparator: '.',
       showLabels: true,
       showTitle: true,
       title,
@@ -80,11 +70,11 @@ export class PrintService {
       useKeysAsHeaders: true,
     };
     const csvExporter = new ExportToCsv(options);
-    if (this.platform.is("android")) {
+    if (this.platform.is('android')) {
       const file = csvExporter.generateCsv(data, true);
-      const path = this.file.externalRootDirectory + "/Download/";
+      const path = this.file.externalRootDirectory + '/Download/';
       this.checkWritePermissions().then(() => {
-        this.writeFile(file, filename, ".csv", "CSV saved to: " + path, path);
+        this.writeFile(file, filename, '.csv', 'CSV saved to: ' + path, path);
       });
     } else {
       csvExporter.generateCsv(data);
@@ -99,28 +89,20 @@ export class PrintService {
    */
   checkWritePermissions(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      if (this.platform.is("android")) {
-        this.androidPermissions
-          .checkPermission(
-            this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
-          )
-          .then(
-            (status) => {
-              if (status.hasPermission) {
-                resolve(true);
-              } else {
-                this.androidPermissions
-                  .requestPermission(
-                    this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
-                  )
-                  .then(
-                    () => resolve(true),
-                    (err) => reject(err)
-                  );
-              }
-            },
-            (err) => reject(err)
-          );
+      if (this.platform.is('android')) {
+        this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(
+          (status) => {
+            if (status.hasPermission) {
+              resolve(true);
+            } else {
+              this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(
+                () => resolve(true),
+                (err) => reject(err)
+              );
+            }
+          },
+          (err) => reject(err)
+        );
       } else {
         resolve(true);
       }
@@ -130,13 +112,7 @@ export class PrintService {
   /**
    * Writes a file to the file system. You need to request write permission separately.
    */
-  writeFile(
-    file: any,
-    filename: string,
-    fileExtension: string,
-    alertMsg: string,
-    path: string
-  ) {
+  writeFile(file: any, filename: string, fileExtension: string, alertMsg: string, path: string) {
     const dateStr = `${this.now.getFullYear()}-${this.now.getMonth()}-${this.now.getDate()}`;
     this.file
       .writeFile(path, `${filename}-${dateStr}${fileExtension}`, file, {

@@ -1,32 +1,25 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
-import { Training } from "src/app/core/classes/training.class";
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Training } from 'src/app/core/classes/training.class';
 
 @Component({
-  selector: "app-print-view",
-  templateUrl: "./print-view.component.html",
-  styleUrls: ["./print-view.component.scss"],
+  selector: 'app-print-view',
+  templateUrl: './print-view.component.html',
+  styleUrls: ['./print-view.component.scss'],
 })
 export class PrintViewComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() trainings: Training[];
-  @ViewChild("#printArea") printArea;
+  @ViewChild('#printArea') printArea;
 
   constructor() {}
 
   ngOnInit() {
-    document.body.setAttribute("color-theme", "light");
+    document.body.setAttribute('color-theme', 'light');
   }
 
   ngAfterViewInit() {}
 
   ngOnDestroy() {
-    document.body.setAttribute("color-theme", localStorage.getItem("theme"));
+    document.body.setAttribute('color-theme', localStorage.getItem('theme'));
   }
 
   countStatus(training: Training, status: number) {

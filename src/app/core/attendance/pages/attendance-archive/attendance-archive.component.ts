@@ -1,18 +1,18 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActionSheetController, AlertController } from "@ionic/angular";
-import { Subscription } from "rxjs";
-import { PrintService } from "../../../../shared/services/print.service";
-import { Group } from "src/app/core/classes/group.class";
-import { Training } from "src/app/core/classes/training.class";
-import { Store } from "@ngrx/store";
-import { GroupsSelector, TrainingsSelector } from "src/app/store/selectors";
-import { TrainingsActions } from "src/app/store/actions";
-import { Router } from "@angular/router";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActionSheetController, AlertController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { PrintService } from '../../../../shared/services/print.service';
+import { Group } from 'src/app/core/classes/group.class';
+import { Training } from 'src/app/core/classes/training.class';
+import { Store } from '@ngrx/store';
+import { GroupsSelector, TrainingsSelector } from 'src/app/store/selectors';
+import { TrainingsActions } from 'src/app/store/actions';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: "app-training-archive",
-  templateUrl: "./attendance-archive.component.html",
-  styleUrls: ["./attendance-archive.component.scss"],
+  selector: 'app-training-archive',
+  templateUrl: './attendance-archive.component.html',
+  styleUrls: ['./attendance-archive.component.scss'],
 })
 export class AttendanceArchiveComponent implements OnInit, OnDestroy {
   public printView = false;
@@ -50,32 +50,29 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
   }
 
   toggleList(id: string) {
-    const eleContent = document.getElementById("content-" + id);
-    const eleCard = document.getElementById("card-" + id);
-    if (eleContent.classList.contains("ion-hide")) {
-      eleContent.classList.remove("ion-hide");
+    const eleContent = document.getElementById('content-' + id);
+    const eleCard = document.getElementById('card-' + id);
+    if (eleContent.classList.contains('ion-hide')) {
+      eleContent.classList.remove('ion-hide');
     } else {
-      eleContent.classList.add("ion-hide");
+      eleContent.classList.add('ion-hide');
     }
   }
 
   async removeTraining(training: Training) {
     const alert = await this.alertCtrl.create({
-      header: "Confirm delete",
-      message:
-        "Do you really want to delete this archive entry? This cannot be undone!",
+      header: 'Confirm delete',
+      message: 'Do you really want to delete this archive entry? This cannot be undone!',
       buttons: [
         {
-          text: "Cancel",
-          role: "cancel",
+          text: 'Cancel',
+          role: 'cancel',
           handler: () => {},
         },
         {
-          text: "Confirm",
+          text: 'Confirm',
           handler: () => {
-            this.trainings = this.trainings.filter(
-              (item) => item.datetime !== training.datetime
-            );
+            this.trainings = this.trainings.filter((item) => item.datetime !== training.datetime);
             this.store.dispatch(TrainingsActions.removeTraining({ training }));
           },
         },
@@ -86,7 +83,7 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
 
   editTraining(training: Training) {
     this.store.dispatch(TrainingsActions.selectTraining({ training }));
-    this.router.navigateByUrl("/attendance/new");
+    this.router.navigateByUrl('/attendance/new');
   }
 
   countStatus(training: Training, status: number) {
@@ -101,24 +98,24 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
 
   async toggleActionSheet() {
     const actionSheet = await this.actionSheetCtrl.create({
-      header: "Actions",
+      header: 'Actions',
       buttons: [
         {
-          text: "Export as CSV",
-          icon: "download",
+          text: 'Export as CSV',
+          icon: 'download',
           handler: () => this.csvExport(),
         },
         {
-          text: "Print",
-          icon: "print",
+          text: 'Print',
+          icon: 'print',
           handler: () => {
             this.doPrint();
           },
         },
         {
-          text: "Cancel",
-          role: "cancel",
-          icon: "close",
+          text: 'Cancel',
+          role: 'cancel',
+          icon: 'close',
         },
       ],
     });
@@ -131,29 +128,15 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
   csvExport() {
     // Flatten the data to fit into a table
     const flatData = this.flattenData();
-    this.printService.csvExport(
-      "Training Archive",
-      flatData,
-      "attendance-archive"
-    );
+    this.printService.csvExport('Training Archive', flatData, 'attendance-archive');
   }
 
   /**
    * Prints filteredTrainings in table format as PDF
    */
   doPrint() {
-    const columns = [
-      "ID",
-      "Group Name",
-      "Date",
-      "Student Name",
-      "Student Status",
-    ];
-    this.printService.pdfExport(
-      "Training Archive",
-      columns,
-      this.getDataAsArray()
-    );
+    const columns = ['ID', 'Group Name', 'Date', 'Student Name', 'Student Status'];
+    this.printService.pdfExport('Training Archive', columns, this.getDataAsArray());
   }
 
   /**
@@ -194,7 +177,7 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
             training.group.name,
             training.datetime.toString(),
             item.student.name,
-            item.status + "",
+            item.status + '',
           ]);
         });
       });
@@ -216,10 +199,8 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
    */
   applyFilters() {
     this.filteredTrainings = [...this.trainings];
-    if (this.groupFilter && this.groupFilter !== "") {
-      this.filteredTrainings = this.filteredTrainings.filter(
-        (training) => training.group.id === this.groupFilter
-      );
+    if (this.groupFilter && this.groupFilter !== '') {
+      this.filteredTrainings = this.filteredTrainings.filter((training) => training.group.id === this.groupFilter);
     }
     /* if (this.minDateFilter) {
           this.filteredTrainings = this.filteredTrainings

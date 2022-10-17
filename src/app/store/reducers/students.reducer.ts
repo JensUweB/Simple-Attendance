@@ -1,6 +1,6 @@
-import { createReducer, on } from "@ngrx/store";
-import { Student } from "src/app/core/classes/student.class";
-import { StudentsActions } from "../actions";
+import { createReducer, on } from '@ngrx/store';
+import { Student } from 'src/app/core/classes/student.class';
+import { StudentsActions } from '../actions';
 
 export interface StudentsState {
   students: Student[];
@@ -18,10 +18,7 @@ export const studentsReducer = createReducer(
   })),
   on(StudentsActions.addStudents, (state, { students }) => ({
     ...state,
-    students: [
-      ...state.students.filter((s) => !students.some((b) => b.id === s.id)),
-      ...students,
-    ],
+    students: [...state.students.filter((s) => !students.some((b) => b.id === s.id)), ...students],
   })),
   on(StudentsActions.addStudent, (state, { student }) => ({
     ...state,
