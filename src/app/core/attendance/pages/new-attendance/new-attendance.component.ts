@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Helper } from '../../../../shared/classes/helper.class';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ToastController } from '@ionic/angular';
 import { Group } from 'src/app/core/classes/group.class';
