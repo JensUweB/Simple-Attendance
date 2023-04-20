@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-
 import { AnimationController, Platform } from '@ionic/angular';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { StatusBar } from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-root',
@@ -38,10 +39,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     },
   ];
 
-  constructor(
-    private platform: Platform,
-    private animCtrl: AnimationController
-  ) {
+  constructor(private platform: Platform, private animCtrl: AnimationController) {
     this.initializeApp();
   }
 
@@ -66,11 +64,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     }, 4000);
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      // this.statusBar.styleDefault();
-      // this.splashScreen.hide();
-    });
+  async initializeApp() {
+    await this.platform.ready();
+    await SplashScreen.hide();
 
     // Check & set color theme. Dark theme is default
     let theme = localStorage.getItem('theme');
