@@ -42,7 +42,7 @@ export class PrintViewComponent implements OnInit, OnDestroy, AfterViewInit {
           GroupName: training.group.name,
           Date: training.datetime,
           StudentId: item.student.id,
-          StudentName: item.student.name,
+          StudentName: item.student.displayName,
           StudentStatus: item.status,
         });
       });

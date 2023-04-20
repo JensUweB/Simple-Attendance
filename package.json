@@ -4,6 +4,7 @@
   "author": "Jens Uwe Becker",
   "homepage": "https://github.com/JensUweB",
   "description": "An Ionic attendance app.",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ionic serve",
@@ -50,6 +51,7 @@
     "cordova-plugin-x-socialsharing": "^6.0.3",
     "es6-promise-plugin": "^4.2.2",
     "export-to-csv": "^0.2.1",
+    "file-saver": "^2.0.5",
     "integrator-cordova-plugin-downloader": "^1.1.0",
     "ngrx-store-localstorage": "^14.0.0",
     "pdfmake": "^0.1.72",

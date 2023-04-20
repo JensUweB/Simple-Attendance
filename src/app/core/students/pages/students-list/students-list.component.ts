@@ -16,7 +16,8 @@ import { Training } from 'src/app/core/classes/training.class';
   styleUrls: ['./students-list.component.scss'],
 })
 export class StudentsListComponent implements OnInit, OnDestroy {
-  @ViewChild('nameInput') private studentInput;
+  public firstName: string;
+  public lastName: string;
   public students: Student[];
   public groups: Group[];
   public trainings: Training[];
@@ -46,15 +47,18 @@ export class StudentsListComponent implements OnInit, OnDestroy {
    * Creates a new student and adds it to the array
    */
   addStudent() {
-    if (this.studentInput.value) {
+    if (this.firstName && this.lastName) {
       const student: Student = {
         id: Helper.uuid(),
-        name: this.studentInput.value,
+        displayName: this.firstName + ' ' + this.lastName,
+        firstName: this.firstName,
+        lastName: this.lastName,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
       this.store.dispatch(StudentsActions.addStudent({ student }));
-      this.studentInput.value = null;
+      this.firstName = null;
+      this.lastName = null;
     }
   }
 
@@ -66,7 +70,7 @@ export class StudentsListComponent implements OnInit, OnDestroy {
       header: 'Confirm delete',
       message:
         'Do you really want to remove ' +
-        student.name +
+        student.displayName +
         '? This student will also get removed from all existing groups! This cannot be undone.',
       buttons: [
         {
@@ -141,7 +145,7 @@ export class StudentsListComponent implements OnInit, OnDestroy {
       for (const student of this.students) {
         flatData.push({
           ID: student.id,
-          Name: student.name,
+          Name: student.displayName,
           GroupsNo: await this.getStudentGroupsCount(student.id),
           Attended: await this.getStudentTrainingCount(student.id, 1),
           NotCanceled: await this.getStudentTrainingCount(student.id, 0),
@@ -204,7 +208,7 @@ export class StudentsListComponent implements OnInit, OnDestroy {
     this.students.forEach((student) => {
       data.push([
         student.id,
-        student.name,
+        student.displayName,
         this.getStudentGroupsCount(student.id),
         this.getStudentTrainingCount(student.id, 1),
         this.getStudentTrainingCount(student.id, 0),

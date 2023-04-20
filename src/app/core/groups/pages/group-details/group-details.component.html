@@ -3,8 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/groups"></ion-back-button>
     </ion-buttons>
-    <ion-title><h2 id="title">{{group.name}}</h2></ion-title>
-    <ion-buttons slot="end" style="margin-right: 20px;">
+    <ion-title
+      ><h2 id="title">{{ group.name }}</h2></ion-title
+    >
+    <ion-buttons slot="end" style="margin-right: 20px">
       <ion-item color="translucent" (click)="removeGroup()">
         <ion-icon name="trash-outline" color="danger"></ion-icon>
       </ion-item>
@@ -19,32 +21,42 @@
         <ion-col>
           <ion-item>
             <ion-label>Add Students</ion-label>
-            <ion-select multiple="true"
+            <ion-select
+              multiple="true"
               okText="Add to Group"
               [(ngModel)]="selectedStudents"
               (ionChange)="onSelectionChange()"
             >
-            <ion-select-option *ngFor="let student of studentsToAdd" [value]="student.id">
-              {{student.name}}
-            </ion-select-option>
-            <ion-select-option *ngIf="!studentsToAdd || studentsToAdd.length === 0" disabled>Nothing to add!</ion-select-option>
-          </ion-select>
+              <ion-select-option *ngFor="let student of studentsToAdd" [value]="student.id">
+                {{ student.displayName }}
+              </ion-select-option>
+              <ion-select-option *ngIf="!studentsToAdd || studentsToAdd.length === 0" disabled
+                >Nothing to add!</ion-select-option
+              >
+            </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <div *ngIf="!group.students || group.students.length === 0">
-            <p>This group is pretty empty, huh? <br/> Just click on the dropdown above to add someone to this group!</p>
+            <p>
+              This group is pretty empty, huh? <br />
+              Just click on the dropdown above to add someone to this group!
+            </p>
           </div>
           <ion-list *ngIf="group.students && group.students.length > 0">
             <ion-item *ngFor="let student of group.students">
               <ion-label>
-                <ion-icon name="person" style="margin-right: 5px;"></ion-icon>
-                {{student.name}}
+                <ion-icon name="person" style="margin-right: 5px"></ion-icon>
+                {{ student.displayName }}
               </ion-label>
-              <ion-icon name="close-circle-outline" class="icon-btn" color="danger"
-              (click)="removeStudent(student)"></ion-icon>
+              <ion-icon
+                name="close-circle-outline"
+                class="icon-btn"
+                color="danger"
+                (click)="removeStudent(student)"
+              ></ion-icon>
             </ion-item>
           </ion-list>
         </ion-col>

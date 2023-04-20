@@ -1,6 +1,8 @@
 export class Student {
   id: string;
-  name: string;
+  displayName: string;
+  firstName: string;
+  lastName: string;
   createdAt: Date;
   updatedAt: Date;
 }

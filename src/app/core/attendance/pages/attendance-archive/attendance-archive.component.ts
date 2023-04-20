@@ -146,18 +146,18 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
     // Flatten the data to fit into a table
     const flatData = [];
     if (this.filteredTrainings.length > 0) {
-      this.filteredTrainings.forEach((training) => {
-        training.students.forEach((item) => {
+      for (const training of this.filteredTrainings) {
+        for (const item of training.students) {
           flatData.push({
             ID: training.id,
             GroupName: training.group.name,
             Date: training.datetime,
-            StudentId: item.student.id,
-            StudentName: item.student.name,
-            StudentStatus: item.status,
+            Firstname: item.student.firstName,
+            Lastname: item.student.lastName,
+            Status: item.status,
           });
-        });
-      });
+        }
+      }
     }
     return flatData;
   }
@@ -176,7 +176,7 @@ export class AttendanceArchiveComponent implements OnInit, OnDestroy {
             training.id,
             training.group.name,
             training.datetime.toString(),
-            item.student.name,
+            item.student.displayName,
             item.status + '',
           ]);
         });

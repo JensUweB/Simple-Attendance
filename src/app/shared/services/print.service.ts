@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ExportToCsv } from 'export-to-csv';
+import { saveAs } from 'file-saver';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { Platform } from '@ionic/angular';
 import * as PDFMake from 'pdfmake/build/pdfmake.js';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +59,7 @@ export class PrintService {
    * @param filename Name of the file
    */
   csvExport(title: string, data: any[], filename: string) {
+    console.log('data', data);
     const options = {
       fieldSeparator: ',',
       quoteStrings: '"',
@@ -69,16 +71,46 @@ export class PrintService {
       useBom: true,
       useKeysAsHeaders: true,
     };
-    const csvExporter = new ExportToCsv(options);
-    if (this.platform.is('android')) {
-      const file = csvExporter.generateCsv(data, true);
-      const path = this.file.externalRootDirectory + '/Download/';
-      this.checkWritePermissions().then(() => {
-        this.writeFile(file, filename, '.csv', 'CSV saved to: ' + path, path);
-      });
-    } else {
-      csvExporter.generateCsv(data);
+    const file = this.generateCSV(data);
+    switch (Capacitor.getPlatform()) {
+      case 'ios':
+      case 'android':
+        const path = this.file.externalRootDirectory + '/Download/';
+        this.checkWritePermissions().then(() => {
+          this.writeFile(file, filename, '.csv', 'CSV saved to: ' + path, path);
+        });
+        break;
+      default:
+        saveAs(file, filename + '.csv');
+        break;
     }
+  }
+
+  generateCSV(dataArray: any[]): Blob {
+    if (!dataArray || !dataArray.length) {
+      console.error('Data array is empty or not provided.');
+      return;
+    }
+
+    // Create a header row for the CSV file
+    const header = Object.keys(dataArray[0]).join(',');
+    console.log('headers', header);
+
+    // Create the CSV content by joining the data rows
+    const csvContent = dataArray
+      .map((row) =>
+        Object.values(row)
+          .map((value) => `"${value}"`)
+          .join(',')
+      )
+      .join('\n');
+
+    // Combine header and content
+    const csv = `${header}\n${csvContent}`;
+
+    // Create a Blob with the CSV content and save it as a file
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    return blob;
   }
 
   /**
